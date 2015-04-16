@@ -51,5 +51,25 @@ Accordingly, if you are looking for a more consistent approach with ES6 specific
 
 I will try to check with @medikoo if we could simply merge these two approaches and have a better sham "to rule them all".
 
+
 #### Compatibility
-You can check if your browser or device is compatible [through this page](http://webreflection.github.io/get-own-property-symbols/test/)
+
+##### Mobile
+
+  * Android 2.x and higher ( Android 2 requires code minification if `Symbol.for` is used, or `Symbol['for']` instead )
+  * iOS5 and higher
+  * Windows Phone 7 (IE9 Mobile) and higher
+  * Blackberry OS7 and higher
+  * FirefoxOS 1.0 and higher
+  * Opera Mini and Opera Mobile
+  * Ubuntu Phone, Kindle Fire, and all others based on Webkit or Chrome
+
+
+##### Desktop
+
+  * IE9 and higher
+  * Chrome and Opera
+  * Firefox
+  * Safari
+
+You can also check if your browser or device is compatible [through this page](http://webreflection.github.io/get-own-property-symbols/test/).
