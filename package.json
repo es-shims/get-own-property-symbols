@@ -1,13 +1,13 @@
 {
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
   "homepage": "https://github.com/WebReflection/get-own-property-symbols",
   "keywords": [],
   "author": {
-    "name": "",
-    "web": ""
+    "name": "Andrea Giammarchi",
+    "web": "http://webreflection.blogspot.com/"
   },
   "repository": {
     "type": "git",

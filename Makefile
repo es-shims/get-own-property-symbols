@@ -20,9 +20,9 @@ build:
 	make clean
 	make var
 	make node
-	make amd
+#	make amd
 	make test
-#	make hint
+	make hint
 	make size
 
 # build generic version
