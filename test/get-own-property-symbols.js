@@ -9,7 +9,7 @@ wru.test([
       wru.assert(typeof Object.getOwnPropertySymbols == 'function');
       wru.assert(typeof Symbol == 'function');
     }
-  },{
+  }, {
     name: 'basics work',
     test: function () {
       var o = {};
@@ -48,8 +48,8 @@ wru.test([
     name: 'Symbol methods',
     test: function () {
       var label = 'random' + Math.random();
-      var s = Symbol.for(label);
-      wru.assert('labeled Symbols are the same', s === Symbol.for(label));
+      var s = Symbol['for'](label);
+      wru.assert('labeled Symbols are the same', s === Symbol['for'](label));
       wru.assert('labels can be retrieved back', Symbol.keyFor(s) === label);
     }
   }

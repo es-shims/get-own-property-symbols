@@ -67,6 +67,14 @@ THE SOFTWARE.
       };
       defineProperty(ObjectProto, uid, descriptor);
       return uid;
+    },
+    Symbol = function Symbol(description) {
+      if (this && this !== G) {
+        throw new TypeError('Symbol is not a constructor');
+      }
+      return setAndGetSymbol(
+        prefix.concat(description || '', random, ++id)
+      );
     }
   ;
 
@@ -79,15 +87,6 @@ THE SOFTWARE.
     return gOPN(o).filter(onlySymbols);
   };
   defineProperty(Object, GOPS, descriptor);
-
-  function Symbol(description) {
-    if (this && this !== G) {
-      throw new TypeError('Symbol is not a constructor');
-    }
-    return setAndGetSymbol(
-      prefix.concat(description || '', random, ++id)
-    );
-  }
 
   descriptor.value = Symbol;
   defineProperty(G, 'Symbol', descriptor);
