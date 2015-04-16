@@ -40,6 +40,10 @@ o[s] = 123;
 Object.keys(o); // [s]
 ```
 
+#### How to use
+Either `npm install get-own-property-symbols` or include [this file](build/get-own-property-symbols.js) on your page.
+
+
 #### More details
 There are alternatives to partially polyfill [Symbol only](https://github.com/medikoo/es6-symbol#es6-symbol) and the main difference is that whit `get-own-property-symbols` you actually have `Object.getOwnPropertySymbols` functionality and `Object.getOwnPropertyNames` will never show Symbols too.
 
