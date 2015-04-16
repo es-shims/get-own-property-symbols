@@ -1,10 +1,16 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
   "homepage": "https://github.com/WebReflection/get-own-property-symbols",
-  "keywords": [],
+  "keywords": [
+    "Object",
+    "getOwnPropertySymbols",
+    "ES6",
+    "Symbol",
+    "polyfill"
+  ],
   "author": {
     "name": "Andrea Giammarchi",
     "web": "http://webreflection.blogspot.com/"
