@@ -46,3 +46,6 @@ There are alternatives to partially polyfill [Symbol only](https://github.com/me
 Accordingly, if you are looking for a more consistent approach with ES6 specifications, use this module, otherwise feel free to go for the `Symbol` only.
 
 I will try to check with @medikoo if we could simply merge these two approaches and have a better sham "to rule them all".
+
+#### Compatibility
+You can check if your browser or device is compatible [through this page](http://webreflection.github.io/get-own-property-symbols/test/)
