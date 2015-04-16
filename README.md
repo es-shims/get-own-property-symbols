@@ -63,6 +63,7 @@ I will try to check with @medikoo if we could simply merge these two approaches 
   * FirefoxOS 1.0 and higher
   * Opera Mini and Opera Mobile
   * Ubuntu Phone, Kindle Fire, and all others based on Webkit or Chrome
+  * yes, even Palm WebOS 2 works
 
 
 ##### Desktop
