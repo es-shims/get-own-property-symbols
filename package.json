@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
@@ -17,7 +17,10 @@
   "scripts": {
     "test": "node test/.test.js"
   },
-  "dependencies": {
-    "wru": ">= 0.0.0"
+  "devDependencies": {
+    "wru": "~0.2.x",
+    "uglify-js": "1.x",
+    "jshint": "~2.x",
+    "polpetta": "~0.3.x"
   }
 }
