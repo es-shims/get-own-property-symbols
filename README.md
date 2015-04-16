@@ -28,6 +28,7 @@ Symbol.for('me') === s; // true
 Symbol.keyFor(s); // 'me'
 ```
 
+#### Caveat
 This partial polyfill _will not work with `null` objects_, and even if [it's possible to make it work](https://gist.github.com/WebReflection/56d04ccb1e5b0e50c121#comment-1426442) it's not worth the hassle.
 ```js
 var o = Object.create(null);
@@ -39,7 +40,7 @@ o[s] = 123;
 Object.keys(o); // [s]
 ```
 
-
+#### More details
 There are alternatives to partially polyfill [Symbol only](https://github.com/medikoo/es6-symbol#es6-symbol) and the main difference is that whit `get-own-property-symbols` you actually have `Object.getOwnPropertySymbols` functionality and `Object.getOwnPropertyNames` will never show Symbols too.
 
 Accordingly, if you are looking for a more consistent approach with ES6 specifications, use this module, otherwise feel free to go for the `Symbol` only.
