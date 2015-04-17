@@ -1,7 +1,7 @@
 get-own-property-symbols
 ========================
 
-[![build status](https://secure.travis-ci.org/WebReflection/get-own-property-symbols.png)](http://travis-ci.org/WebReflection/get-own-property-symbols)
+[![build status](https://secure.travis-ci.org/WebReflection/get-own-property-symbols.svg)](http://travis-ci.org/WebReflection/get-own-property-symbols)
 
 This is a widely compatible, Mobile friendly, and zero dependencies partial polyfill for `Object.getOwnPropertySymbols`.
 ```js
