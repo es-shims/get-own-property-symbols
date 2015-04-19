@@ -82,7 +82,7 @@
         prefix.concat(description || '', random, ++id)
       );
     },
-    $defineProperty = function defineProperty(o, key, descriptor) {
+    $defineProperty = function defineProp(o, key, descriptor) {
       var uid = '' + key;
       if (onlySymbols(uid)) {
         setDescriptor(o, uid, descriptor.enumerable ?
