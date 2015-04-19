@@ -27,6 +27,10 @@
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
     pIE = ObjectProto[PIE],
+    indexOf = Array.prototype.indexOf || function (v) {
+      for (var i = this.length; i-- && this[i] !== v;) {}
+      return i;
+    },
     addInternalIfNeeded = function (o) {
       if (!(internalSymbol in o)) {
         defineProperty(o, internalSymbol, {
@@ -38,7 +42,7 @@
       }
     },
     addOrModifyEnumerability = function (pairs, uid, enumerable) {
-      var i = pairs.indexOf(uid);
+      var i = indexOf.call(pairs, uid);
       if (i < 0) {
         pairs.push(uid, enumerable);
       } else {
@@ -133,7 +137,7 @@
     var uid = '' + key;
     return onlySymbols(uid) ? (
       hOP.call(this, uid) &&
-      this[internalSymbol][this[internalSymbol].indexOf(uid) + 1]
+      this[internalSymbol][indexOf.call(this[internalSymbol], uid) + 1]
     ) : pIE.call(this, key);
   };
   defineProperty(ObjectProto, PIE, descriptor);
@@ -152,7 +156,7 @@
   descriptor.value = function (symbol) {
     return (
       (prefix + prefix) === symbol.slice(0, prefixLength * 2) &&
-      -1 < gOPN(ObjectProto).indexOf(symbol)
+      -1 < indexOf.call(gOPN(ObjectProto), symbol)
     ) ?
       symbol.slice(prefixLength * 2, -random.length) :
       void 0
