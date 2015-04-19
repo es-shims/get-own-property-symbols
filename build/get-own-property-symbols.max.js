@@ -27,23 +27,59 @@ THE SOFTWARE.
   if (GOPS in Object) return;
 
   var
-    hasConfigurableBug,
+    setDescriptor,
     G = typeof global === typeof G ? window : global,
     id = 0,
     random = '' + Math.random(),
     prefix = '__\x01symbol:',
     prefixLength = prefix.length,
+    internalSymbol = '__\x01symbol@@' + random,
+    DP = 'defineProperty',
+    DPies = 'defineProperties',
     GOPN = 'getOwnPropertyNames',
+    GOPD = 'getOwnPropertyDescriptor',
+    PIE = 'propertyIsEnumerable',
     gOPN = Object[GOPN],
+    gOPD = Object[GOPD],
+    create = Object.create,
+    keys = Object.keys,
+    defineProperty = Object[DP],
+    defineProperties = Object[DPies],
+    descriptor = gOPD(Object, GOPN),
     ObjectProto = Object.prototype,
-    defineProperty = Object.defineProperty,
-    descriptor = Object.getOwnPropertyDescriptor(Object, GOPN),
+    hOP = ObjectProto.hasOwnProperty,
+    pIE = ObjectProto[PIE],
+    addInternalIfNeeded = function (o) {
+      if (!(internalSymbol in o)) {
+        defineProperty(o, internalSymbol, {
+          enumerable: false,
+          configurable: false,
+          writable: false,
+          value: []
+        });
+      }
+    },
+    addOrModifyEnumerability = function (pairs, uid, enumerable) {
+      var i = pairs.indexOf(uid);
+      if (i < 0) {
+        pairs.push(uid, enumerable);
+      } else {
+        pairs[i + 1] = enumerable;
+      }
+    },
+    copyAsNonEnumerable = function (descriptor) {
+      var newDescriptor = create(descriptor);
+      newDescriptor.enumerable = false;
+      return newDescriptor;
+    },
     get = function get(){},
     onlyNonSymbols = function (name) {
-      return name.slice(0, prefixLength) !== prefix;
+      return  name !== internalSymbol &&
+              name.slice(0, prefixLength) !== prefix;
     },
     onlySymbols = function (name) {
-      return name.slice(0, prefixLength) === prefix;
+      return  name !== internalSymbol &&
+              name.slice(0, prefixLength) === prefix;
     },
     setAndGetSymbol = function (uid) {
       var descriptor = {
@@ -51,18 +87,14 @@ THE SOFTWARE.
         configurable: true,
         get: get,
         set: function (value) {
-          if (hasConfigurableBug) {
-            delete ObjectProto[uid];
-          }
-          defineProperty(this, uid, {
+          setDescriptor(this, uid, {
             enumerable: false,
             configurable: true,
             writable: true,
             value: value
           });
-          if (hasConfigurableBug) {
-            defineProperty(ObjectProto, uid, descriptor);
-          }
+          addInternalIfNeeded(this);
+          addOrModifyEnumerability(this[internalSymbol], uid, true);
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
@@ -75,18 +107,58 @@ THE SOFTWARE.
       return setAndGetSymbol(
         prefix.concat(description || '', random, ++id)
       );
+    },
+    $defineProperty = function defineProperty(o, key, descriptor) {
+      var uid = '' + key;
+      if (onlySymbols(uid)) {
+        setDescriptor(o, uid, descriptor.enumerable ?
+            copyAsNonEnumerable(descriptor) : descriptor);
+        addInternalIfNeeded(o);
+        addOrModifyEnumerability(o[internalSymbol], uid, !!descriptor.enumerable);
+      } else {
+        defineProperty(o, key, descriptor);
+      }
+      return o;
+    },
+    $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
+      return gOPN(o).filter(onlySymbols);
     }
   ;
+
+  descriptor.value = $defineProperty;
+  defineProperty(Object, DP, descriptor);
+
+  descriptor.value = $getOwnPropertySymbols;
+  defineProperty(Object, GOPS, descriptor);
 
   descriptor.value = function getOwnPropertyNames(o) {
     return gOPN(o).filter(onlyNonSymbols);
   };
   defineProperty(Object, GOPN, descriptor);
 
-  descriptor.value = function getOwnPropertySymbols(o) {
-    return gOPN(o).filter(onlySymbols);
+  descriptor.value = function defineProperties(o, descriptors) {
+    var symbols = $getOwnPropertySymbols(descriptors);
+    if (symbols.length) {
+      keys(descriptors).concat(symbols).forEach(function (uid) {
+        if (descriptors.propertyIsEnumerable(uid)) {
+          $defineProperty(o, uid, descriptors[uid]);
+        }
+      });
+    } else {
+      defineProperties(o, descriptors);
+    }
+    return o;
   };
-  defineProperty(Object, GOPS, descriptor);
+  defineProperty(Object, DPies, descriptor);
+
+  descriptor.value = function propertyIsEnumerable(key) {
+    var uid = '' + key;
+    return onlySymbols(uid) ? (
+      hOP.call(this, uid) &&
+      this[internalSymbol][this[internalSymbol].indexOf(uid) + 1]
+    ) : pIE.call(this, key);
+  };
+  defineProperty(ObjectProto, PIE, descriptor);
 
   descriptor.value = Symbol;
   defineProperty(G, 'Symbol', descriptor);
@@ -111,7 +183,7 @@ THE SOFTWARE.
   defineProperty(Symbol, 'keyFor', descriptor);
 
   try { // fails in few pre ES 5.1 engines
-    hasConfigurableBug = Object.create(
+    setDescriptor = create(
       defineProperty(
         {},
         prefix,
@@ -121,9 +193,14 @@ THE SOFTWARE.
           }
         }
       )
-    )[prefix];
+    )[prefix] || defineProperty;
   } catch(o_O) {
-    hasConfigurableBug = true;
+    setDescriptor = function (o, key, descriptor) {
+      var protoDescriptor = gOPD(ObjectProto, key);
+      delete ObjectProto[key];
+      defineProperty(o, key, descriptor);
+      defineProperty(ObjectProto, key, protoDescriptor);
+    };
   }
 
 }(Object, 'getOwnPropertySymbols'));

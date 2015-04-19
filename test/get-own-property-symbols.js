@@ -52,5 +52,66 @@ wru.test([
       wru.assert('labeled Symbols are the same', s === Symbol['for'](label));
       wru.assert('labels can be retrieved back', Symbol.keyFor(s) === label);
     }
+  }, {
+    name: 'propertyIsEnumerable',
+    test: function () {
+      var o = {};
+      var s = Symbol();
+      o[s] = 123;
+      for (var k in o) throw new Error('should not show up in a for/in');
+      if (Object.keys(o).length) throw new Error('should not show up in Object.keys');
+      wru.assert('property is enumerable', o.propertyIsEnumerable(s));
+    }
+  }, {
+    name: 'define Symbol property as enumerable',
+    test: function () {
+      var o = {};
+      var s = Symbol();
+      Object.defineProperty(o, s, {enumerable: true, value: 456});
+      for (var k in o) throw new Error('should not show up in a for/in');
+      if (Object.keys(o).length) throw new Error('should not show up in Object.keys');
+      wru.assert('property is enumerable', o.propertyIsEnumerable(s));
+    }
+  }, {
+    name: 'define Symbol property as non enumerable',
+    test: function () {
+      var o = {};
+      var s = Symbol();
+      Object.defineProperty(o, s, {enumerable: false, value: 456});
+      for (var k in o) throw new Error('should not show up in a for/in');
+      if (Object.keys(o).length) throw new Error('should not show up in Object.keys');
+      wru.assert('property is NOT enumerable', !o.propertyIsEnumerable(s));
+    }
+  }, {
+    name: 'defineProperties',
+    test: function () {
+      var o = {};
+      var descriptors = {};
+      var sEnumerable = Symbol();
+      var sNotEnumerable = Symbol();
+      descriptors[sEnumerable] = {
+        enumerable: true,
+        value: 'enumerable'
+      };
+      descriptors[sNotEnumerable] = {
+        value: 'non-enumerable'
+      };
+      Object.defineProperties(o, descriptors);
+      for (var k in o) throw new Error('should not show up in a for/in');
+      if (Object.keys(o).length) throw new Error('should not show up in Object.keys');
+      wru.assert('property is enumerable', o.propertyIsEnumerable(sEnumerable));
+      wru.assert('property is NOT enumerable', !o.propertyIsEnumerable(sNotEnumerable));
+      wru.assert('enumerable property is the right one', o[sEnumerable] === 'enumerable');
+      wru.assert('non enumerable property is the right one', o[sNotEnumerable] === 'non-enumerable');
+    }
+  }, {
+    name: 'defineProperties with non enumerable properties',
+    test: function () {
+      var o = {};
+      var s = Symbol();
+      var descriptors = Object.defineProperty({}, s, {enumerable: false, value: 'would throw'});
+      Object.defineProperties(o, descriptors);
+      wru.assert('should not have been assigned', o[s] === undefined);
+    }
   }
 ]);
