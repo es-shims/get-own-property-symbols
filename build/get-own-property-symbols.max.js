@@ -53,23 +53,16 @@ THE SOFTWARE.
       for (var i = this.length; i-- && this[i] !== v;) {}
       return i;
     },
-    addInternalIfNeeded = function (o) {
-      if (!(internalSymbol in o)) {
+    addInternalIfNeeded = function (o, uid, enumerable) {
+      if (!hOP.call(o, internalSymbol)) {
         defineProperty(o, internalSymbol, {
           enumerable: false,
           configurable: false,
           writable: false,
-          value: []
+          value: {}
         });
       }
-    },
-    addOrModifyEnumerability = function (pairs, uid, enumerable) {
-      var i = indexOf.call(pairs, uid);
-      if (i < 0) {
-        pairs.push(uid, enumerable);
-      } else {
-        pairs[i + 1] = enumerable;
-      }
+      o[internalSymbol]['@@' + uid] = enumerable;
     },
     copyAsNonEnumerable = function (descriptor) {
       var newDescriptor = create(descriptor);
@@ -97,8 +90,7 @@ THE SOFTWARE.
             writable: true,
             value: value
           });
-          addInternalIfNeeded(this);
-          addOrModifyEnumerability(this[internalSymbol], uid, true);
+          addInternalIfNeeded(this, uid, true);
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
@@ -117,8 +109,7 @@ THE SOFTWARE.
       if (onlySymbols(uid)) {
         setDescriptor(o, uid, descriptor.enumerable ?
             copyAsNonEnumerable(descriptor) : descriptor);
-        addInternalIfNeeded(o);
-        addOrModifyEnumerability(o[internalSymbol], uid, !!descriptor.enumerable);
+        addInternalIfNeeded(o, uid, !!descriptor.enumerable);
       } else {
         defineProperty(o, key, descriptor);
       }
@@ -159,7 +150,7 @@ THE SOFTWARE.
     var uid = '' + key;
     return onlySymbols(uid) ? (
       hOP.call(this, uid) &&
-      this[internalSymbol][indexOf.call(this[internalSymbol], uid) + 1]
+      this[internalSymbol]['@@' + uid]
     ) : pIE.call(this, key);
   };
   defineProperty(ObjectProto, PIE, descriptor);
