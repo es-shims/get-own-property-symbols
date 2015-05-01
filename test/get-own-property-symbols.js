@@ -113,5 +113,17 @@ wru.test([
       Object.defineProperties(o, descriptors);
       wru.assert('should not have been assigned', o[s] === undefined);
     }
+  }, {
+    name: 'Array.prototype[Symbol.iterator]',
+    test: function () {
+      var iterator = [1,2,3][Symbol.iterator]();
+      var list = [];
+      var result;
+      while (!(result = iterator.next()).done) {
+        list.push(result.value);
+      }
+      wru.assert('Array is iterable', list.join(',') === '1,2,3');
+      for (var k in []) throw new Error('there should be no iterator here');
+    }
   }
 ]);

@@ -3,7 +3,7 @@ get-own-property-symbols
 
 [![build status](https://secure.travis-ci.org/WebReflection/get-own-property-symbols.svg)](http://travis-ci.org/WebReflection/get-own-property-symbols)
 
-This is a widely compatible, Mobile friendly, and zero dependencies partial polyfill for `Object.getOwnPropertySymbols`.
+This is a widely compatible, Mobile friendly, and zero dependencies polyfill for `Object.getOwnPropertySymbols`.
 ```js
 var getOwnPropertySymbols = require('get-own-property-symbols');
 
@@ -28,8 +28,21 @@ Symbol.for('me') === s; // true
 Symbol.keyFor(s); // 'me'
 ```
 
+Common symbols like `iterator` are also defined including the `Array.prototype[Symbol.iterator]` method.
+```js
+// this is the equivalent of a for/of in ES6
+var iterator = [1,2,3][Symbol.iterator]();
+var result;
+while (!(result = iterator.next()).done) {
+  console.log(result.value);
+}
+```
+
+It is also possible to simply copy same iterator for any other iterable collection.
+
+
 #### Caveat
-This partial polyfill _will not work with `null` objects_, and even if [it's possible to make it work](https://gist.github.com/WebReflection/56d04ccb1e5b0e50c121#comment-1426442) it's not worth the hassle.
+This polyfill _will not work with `null` objects_, and even if [it's possible to make it work](https://gist.github.com/WebReflection/56d04ccb1e5b0e50c121#comment-1426442) it's not worth the hassle.
 ```js
 var o = Object.create(null);
 var s = Symbol();
@@ -45,11 +58,11 @@ Either `npm install get-own-property-symbols` or include [this file](build/get-o
 
 
 #### More details
-There are alternatives to partially polyfill [Symbol only](https://github.com/medikoo/es6-symbol#es6-symbol) and the main difference is that whit `get-own-property-symbols` you actually have `Object.getOwnPropertySymbols` functionality and `Object.getOwnPropertyNames` will never show Symbols too.
+There are alternatives to this polyfill [Symbol only](https://github.com/medikoo/es6-symbol#es6-symbol) and the main difference is that whit `get-own-property-symbols` you actually have `Object.getOwnPropertySymbols` functionality and `Object.getOwnPropertyNames` will never show Symbols too.
+
+Also today [core-js](https://github.com/zloirock/core-js) brings Symbols in but be aware those will break with Android 2 and will fail with null objects.
 
 Accordingly, if you are looking for a more consistent approach with ES6 specifications, use this module, otherwise feel free to go for the `Symbol` only.
-
-I will try to check with @medikoo if we could simply merge these two approaches and have a better sham "to rule them all".
 
 
 #### Compatibility
