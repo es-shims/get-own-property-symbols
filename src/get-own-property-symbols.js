@@ -195,18 +195,43 @@
 }(Object, 'getOwnPropertySymbols'));
 
 
-(function (Array) {
+(function (Si, AP, SP) {
 
   // make Arrays usable as iterators
-  // so that other iterable can copy same logic
-  if (!Array[Symbol.iterator]) Array[Symbol.iterator] = function () {
+  // so that other iterables can copy same logic
+  if (!AP[Si]) AP[Si] = function () {
     var i = 0, self = this;
     return {
       next: function next() {
         var done = self.length <= i;
-        return {done: done, value: done || self[i++]};
+        return done ?
+          {done: done} :
+          {done: done, value: self[i++]};
       }
     };
   };
 
-}(Array.prototype));
+  // make Strings usable as iterators
+  // to simplify Array.from and 
+  if (!SP[Si]) SP[Si] = function () {
+    var
+      fromCodePoint = String.fromCodePoint,
+      self = this,
+      i = 0,
+      length = self.length
+    ;
+    return {
+      next: function next() {
+        var
+          done = length <= i,
+          c = done ? '' : fromCodePoint(self.codePointAt(i))
+        ;
+        i += c.length;
+        return done ?
+          {done: done} :
+          {done: done, value: c};
+      }
+    };
+  };
+
+}(Symbol.iterator, Array.prototype, String.prototype));

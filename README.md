@@ -28,14 +28,24 @@ Symbol.for('me') === s; // true
 Symbol.keyFor(s); // 'me'
 ```
 
-Common symbols like `iterator` are also defined including the `Array.prototype[Symbol.iterator]` method.
+Common symbols like `iterator` are also defined including the `Array.prototype[Symbol.iterator]`
+and the `String.prototype[Symbol.iterator]` method.
 ```js
 // this is the equivalent of a for/of in ES6
 var iterator = [1,2,3][Symbol.iterator]();
 var result;
 while (!(result = iterator.next()).done) {
-  console.log(result.value);
+  console.log(result.value); // 1 then 2 and then 3
 }
+
+
+// this is the equivalent of a for/of in ES6
+var iterator = '😺😲'[Symbol.iterator]();
+var result;
+while (!(result = iterator.next()).done) {
+  console.log(result.value); // '😺' first and '😲' after
+}
+
 ```
 
 It is also possible to simply copy same iterator for any other iterable collection.
