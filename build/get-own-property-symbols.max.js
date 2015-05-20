@@ -64,6 +64,15 @@ THE SOFTWARE.
       }
       o[internalSymbol]['@@' + uid] = enumerable;
     },
+    createWithSymbols = function (proto, descriptors) {
+      var self = create(proto);
+      gOPN(descriptors).forEach(function (key) {
+        if (propertyIsEnumerable.call(descriptors, key)) {
+          $defineProperty(self, key, descriptors[key]);
+        }
+      });
+      return self;
+    },
     copyAsNonEnumerable = function (descriptor) {
       var newDescriptor = create(descriptor);
       newDescriptor.enumerable = false;
@@ -77,6 +86,13 @@ THE SOFTWARE.
     onlySymbols = function (name) {
       return  name !== internalSymbol &&
               name.slice(0, prefixLength) === prefix;
+    },
+    propertyIsEnumerable = function propertyIsEnumerable(key) {
+      var uid = '' + key;
+      return onlySymbols(uid) ? (
+        hOP.call(this, uid) &&
+        this[internalSymbol]['@@' + uid]
+      ) : pIE.call(this, key);
     },
     setAndGetSymbol = function (uid) {
       var descriptor = {
@@ -135,7 +151,7 @@ THE SOFTWARE.
     var symbols = $getOwnPropertySymbols(descriptors);
     if (symbols.length) {
       keys(descriptors).concat(symbols).forEach(function (uid) {
-        if (descriptors.propertyIsEnumerable(uid)) {
+        if (propertyIsEnumerable.call(descriptors, uid)) {
           $defineProperty(o, uid, descriptors[uid]);
         }
       });
@@ -146,13 +162,7 @@ THE SOFTWARE.
   };
   defineProperty(Object, DPies, descriptor);
 
-  descriptor.value = function propertyIsEnumerable(key) {
-    var uid = '' + key;
-    return onlySymbols(uid) ? (
-      hOP.call(this, uid) &&
-      this[internalSymbol]['@@' + uid]
-    ) : pIE.call(this, key);
-  };
+  descriptor.value = propertyIsEnumerable;
   defineProperty(ObjectProto, PIE, descriptor);
 
   descriptor.value = Symbol;
@@ -176,6 +186,22 @@ THE SOFTWARE.
     ;
   };
   defineProperty(Symbol, 'keyFor', descriptor);
+
+  descriptor.value = function getOwnPropertyDescriptor(o, key) {
+    var descriptor = gOPD(o, key);
+    if (descriptor && onlySymbols(key)) {
+      descriptor.enumerable = propertyIsEnumerable.call(o, key);
+    }
+    return descriptor;
+  };
+  defineProperty(Object, GOPD, descriptor);
+
+  descriptor.value = function create(proto, descriptors) {
+    return arguments.length === 1 ?
+      create(proto) :
+      createWithSymbols(proto, descriptors);
+  };
+  defineProperty(Object, 'create', descriptor);
 
   try { // fails in few pre ES 5.1 engines
     setDescriptor = create(

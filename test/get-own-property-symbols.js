@@ -256,5 +256,31 @@ wru.test([
       wru.assert('String is iterable', list.join(',') === '😺,😲');
       for (var k in '') throw new Error('there should be no iterator here');
     }
+  }, {
+    name: 'getOwnPropertyDescriptor',
+    test: function () {
+      var s = Symbol('gOPD');
+      var a = {};
+      var b = {};
+      a[s] = true;
+      Object.defineProperty(b, s, {value: false});
+      wru.assert('a has it enumerable', a.propertyIsEnumerable(s));
+      wru.assert('b has NOT it enumerable', !b.propertyIsEnumerable(s));
+      wru.assert('a has descriptor enumerable', Object.getOwnPropertyDescriptor(a, s).enumerable);
+      wru.assert('b has NOT descriptor enumerable', !Object.getOwnPropertyDescriptor(b, s).enumerable);
+    }
+  }, {
+    name: 'Object.create(proto, symbols)',
+    test: function () {
+      var s = Symbol('Object.create');
+      var a = {};
+      var descriptors = {test: {value: 'value'}};
+      descriptors[s] = {value: 'symbol'};
+      var b = Object.create(a, descriptors);
+      wru.assert('create works', a.isPrototypeOf(b));
+      wru.assert('descriptors work', b.hasOwnProperty('test'));
+      wru.assert('descriptors symbols work', b.hasOwnProperty(s));
+      wru.assert('for real', b[s] === 'symbol');
+    }
   }
 ]);
