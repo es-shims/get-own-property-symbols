@@ -80,12 +80,12 @@ THE SOFTWARE.
     },
     get = function get(){},
     onlyNonSymbols = function (name) {
-      return  name !== internalSymbol &&
-              name.slice(0, prefixLength) !== prefix;
+      return  name != internalSymbol &&
+              !hOP.call(source, name);
     },
     onlySymbols = function (name) {
-      return  name !== internalSymbol &&
-              name.slice(0, prefixLength) === prefix;
+      return  name != internalSymbol &&
+              hOP.call(source, name);
     },
     propertyIsEnumerable = function propertyIsEnumerable(key) {
       var uid = '' + key;
@@ -110,7 +110,11 @@ THE SOFTWARE.
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return uid;
+      return (source[uid] = defineProperty(
+        Object(uid),
+        'constructor',
+        sourceConstructor
+      ));
     },
     Symbol = function Symbol(description) {
       if (this && this !== G) {
@@ -119,6 +123,11 @@ THE SOFTWARE.
       return setAndGetSymbol(
         prefix.concat(description || '', random, ++id)
       );
+    },
+    source = create(null),
+    sourceConstructor = {value: Symbol},
+    sourceMap = function (uid) {
+      return source[uid];
     },
     $defineProperty = function defineProp(o, key, descriptor) {
       var uid = '' + key;
@@ -132,7 +141,7 @@ THE SOFTWARE.
       return o;
     },
     $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
-      return gOPN(o).filter(onlySymbols);
+      return gOPN(o).filter(onlySymbols).map(sourceMap);
     }
   ;
 
@@ -171,16 +180,13 @@ THE SOFTWARE.
   // defining `Symbol.for(key)`
   descriptor.value = function (key) {
     var uid = prefix.concat(prefix, key, random);
-    return uid in ObjectProto ? uid : setAndGetSymbol(uid);
+    return uid in ObjectProto ? source[uid] : setAndGetSymbol(uid);
   };
   defineProperty(Symbol, 'for', descriptor);
 
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
-    return (
-      (prefix + prefix) === symbol.slice(0, prefixLength * 2) &&
-      -1 < indexOf.call(gOPN(ObjectProto), symbol)
-    ) ?
+    return hOP.call(source, symbol) ?
       symbol.slice(prefixLength * 2, -random.length) :
       void 0
     ;

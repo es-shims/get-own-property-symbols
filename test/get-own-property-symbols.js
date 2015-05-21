@@ -282,5 +282,20 @@ wru.test([
       wru.assert('descriptors symbols work', b.hasOwnProperty(s));
       wru.assert('for real', b[s] === 'symbol');
     }
+  }, {
+    name: 'typeof is not string',
+    test: function () {
+      wru.assert(typeof Symbol('typeof') !== 'string');
+    }
+  }, {
+    name: 'instanceof is not Symbol',
+    test: function () {
+      wru.assert(!(Symbol('instanceof') instanceof Symbol));
+    }
+  }, {
+    name: 'Symbol().constructor',
+    test: function () {
+      wru.assert(Symbol('constructor').constructor === Symbol);
+    }
   }
 ]);

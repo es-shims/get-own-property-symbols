@@ -63,6 +63,11 @@ o[s] = 123;
 Object.keys(o); // [s]
 ```
 
+#### the `typeof` gotcha
+It is not possible to overwrite native `typeof` operator and while it returns `symbol` with native support, since version `0.5.0` it returns `object` when polyfilled.
+This is not perfect, but at least it's simple to distinguish between Symbols and regular properties in list of mixed properties collections.
+
+
 #### How to use
 Either `npm install get-own-property-symbols` or include [this file](build/get-own-property-symbols.js) on your page.
 
