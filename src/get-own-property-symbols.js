@@ -180,7 +180,7 @@
   };
   defineProperty(Object, GOPD, descriptor);
 
-  descriptor.value = function create(proto, descriptors) {
+  descriptor.value = function (proto, descriptors) {
     return arguments.length === 1 ?
       create(proto) :
       createWithSymbols(proto, descriptors);
