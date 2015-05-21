@@ -57,7 +57,7 @@ There are few things developers need to know about `Symbol` partial polyfills. H
 #### `null` Objects
 This polyfill _will not work with `null` objects_, and even if [it's possible to make it work](https://gist.github.com/WebReflection/56d04ccb1e5b0e50c121#comment-1426442) it's not worth the hassle.
 ```js
-var o = Object.create(null);
+var o = Object.create(null); // or {__proto__: null}
 var s = Symbol();
 
 o[s] = 123;
@@ -75,7 +75,7 @@ This is not perfect, but at least it's simple to distinguish between Symbols and
 
 #### is `Symbol` native ?
 Since it's not possible to overwrite `typeof`, a check against `typeof key === "symbol"` is all we need to understand if support is native or not.
-Please note that transpilers might wrap this check to be sure the test is done natively and not before transpiling code.
+Please note that transpilers might wrap this check so we should be sure the test is done natively and not before transpiling.
 
 
 
