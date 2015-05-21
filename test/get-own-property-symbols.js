@@ -297,5 +297,11 @@ wru.test([
     test: function () {
       wru.assert(Symbol('constructor').constructor === Symbol);
     }
+  }, {
+    name: 'Object.create is not compromised',
+    test: function () {
+      var o = {};
+      wru.assert(o.isPrototypeOf(Object.create(o)));
+    }
   }
 ]);
