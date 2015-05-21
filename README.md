@@ -51,7 +51,10 @@ while (!(result = iterator.next()).done) {
 It is also possible to simply copy same iterator for any other iterable collection.
 
 
-#### Caveat
+### Caveats
+There are few things developers need to know about `Symbol` partial polyfills. Here a quick summary.
+
+#### `null` Objects
 This polyfill _will not work with `null` objects_, and even if [it's possible to make it work](https://gist.github.com/WebReflection/56d04ccb1e5b0e50c121#comment-1426442) it's not worth the hassle.
 ```js
 var o = Object.create(null);
@@ -66,6 +69,14 @@ Object.keys(o); // [s]
 #### the `typeof` gotcha
 It is not possible to overwrite native `typeof` operator and while it returns `symbol` with native support, since version `0.5.0` it returns `object` when polyfilled.
 This is not perfect, but at least it's simple to distinguish between Symbols and regular properties in list of mixed properties collections.
+
+#### cross-realm incompatibility
+`Symbol.for` and `Symbol.keyFor` can't be shimmed cross-realm. To be extra fair, `Symbol` should never be used cross-realm unless natively supported.
+
+#### is `Symbol` native ?
+Since it's not possible to overwrite `typeof`, a check against `typeof key === "symbol"` is all we need to understand if support is native or not.
+Please note that transpilers might wrap this check to be sure the test is done natively and not before transpiling code.
+
 
 
 #### How to use
