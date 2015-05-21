@@ -78,6 +78,9 @@ Since it's not possible to overwrite `typeof`, a check against `typeof key === "
 Please note that transpilers might wrap this check so we should be sure the test is done natively and not before transpiling.
 
 
+#### the `in` operator
+Since it's also not possible to overwrite `in`, please note that `Symbol() in {}` is always true since SYmbols need to be shimmed through the `Object.prototype`.
+
 
 #### How to use
 Either `npm install get-own-property-symbols` or include [this file](build/get-own-property-symbols.js) on your page.
