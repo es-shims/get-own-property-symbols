@@ -89,9 +89,9 @@ Either `npm install get-own-property-symbols` or include [this file](build/get-o
 #### More details
 There are alternatives to this polyfill [Symbol only](https://github.com/medikoo/es6-symbol#es6-symbol) and the main difference is that whit `get-own-property-symbols` you actually have `Object.getOwnPropertySymbols` functionality and `Object.getOwnPropertyNames` will never show Symbols too.
 
-Also today [core-js](https://github.com/zloirock/core-js) brings Symbols in but be aware those will break with Android 2.3 and will also fail with null objects like this one does.
+Also today [core-js](https://github.com/zloirock/core-js) brings Symbols in, but as part of the entire `core-js` partial polyfill, and with same caveats described in here.
 
-Accordingly, if you are looking for a more backward compatible yet ES6 compliant approach, use this module, otherwise feel free to go for alternatives.
+Accordingly, if you are looking for a backward compatible, stand-alone version, as ES6 compliant as possible partial polyfill, use this module, otherwise feel free to pick alternatives.
 
 **Please note** this polyfill is also **compatible** with [Object.assign](https://github.com/ljharb/object.assign#objectassign-).
 
