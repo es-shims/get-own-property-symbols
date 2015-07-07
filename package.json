@@ -24,6 +24,8 @@
     "test": "node test/.test.js"
   },
   "devDependencies": {
+    "jshint": "^2.8.0",
+    "uglify-js": "^2.4.23",
     "wru": "~0.2.x"
   }
 }
