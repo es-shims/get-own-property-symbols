@@ -250,8 +250,7 @@ THE SOFTWARE.
   defineProperty(ObjectProto, 'toString', {
     value: function toString() {
       var str = asString.call(this);
-      return str === '[object String]' && onlySymbols(this) ?
-        '[object Symbol]' : asString.call(this);
+      return (str === '[object String]' && onlySymbols(this)) ? '[object Symbol]' : str;
     }
   });
 
