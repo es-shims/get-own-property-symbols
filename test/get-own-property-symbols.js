@@ -111,6 +111,7 @@ if (!String.prototype.codePointAt) {
     if (defineProperty) {
       defineProperty(String.prototype, 'codePointAt', {
         'value': codePointAt,
+        enumerable: false,
         'configurable': true,
         'writable': true
       });
@@ -254,7 +255,7 @@ wru.test([
         list.push(result.value);
       }
       wru.assert('String is iterable', list.join(',') === '😺,😲');
-      for (var k in '') throw new Error('there should be no iterator here');
+      for (var k in '') throw new Error(k + ' <= there should be no iterator here');
     }
   }, {
     name: 'getOwnPropertyDescriptor',
@@ -302,6 +303,11 @@ wru.test([
     test: function () {
       var o = {};
       wru.assert(o.isPrototypeOf(Object.create(o)));
+    }
+  }, {
+    name: 'Object#toString.call(Symbol)',
+    test: function () {
+      wru.assert(Object.prototype.toString.call(Symbol()) === '[object Symbol]');
     }
   }
 ]);

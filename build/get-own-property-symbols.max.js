@@ -49,6 +49,7 @@ THE SOFTWARE.
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
     pIE = ObjectProto[PIE],
+    asString = ObjectProto.toString,
     indexOf = Array.prototype.indexOf || function (v) {
       for (var i = this.length; i-- && this[i] !== v;) {}
       return i;
@@ -244,6 +245,14 @@ THE SOFTWARE.
     'toStringTag'         // A string value used for the default description of an object. Used by Object.prototype.toString().
   ].forEach(function (name) {
     defineProperty(Symbol, name, {value: Symbol(name)});
+  });
+
+  defineProperty(ObjectProto, 'toString', {
+    value: function toString() {
+      var str = asString.call(this);
+      return str === '[object String]' && onlySymbols(this) ?
+        '[object Symbol]' : asString.call(this);
+    }
   });
 
 }(Object, 'getOwnPropertySymbols'));
