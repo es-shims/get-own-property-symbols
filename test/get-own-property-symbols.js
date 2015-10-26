@@ -309,5 +309,12 @@ wru.test([
     test: function () {
       wru.assert(Object.prototype.toString.call(Symbol()) === '[object Symbol]');
     }
+  }, {
+    name: 'toStringTag',
+    test: function () {
+      function Point() {}
+      Point.prototype[Symbol.toStringTag] = 'Point';
+      wru.assert(Object.prototype.toString.call(new Point) === '[object Point]');
+    }
   }
 ]);

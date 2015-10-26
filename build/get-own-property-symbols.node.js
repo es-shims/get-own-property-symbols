@@ -49,7 +49,7 @@ THE SOFTWARE.
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
     pIE = ObjectProto[PIE],
-    asString = ObjectProto.toString,
+    toString = ObjectProto.toString,
     indexOf = Array.prototype.indexOf || function (v) {
       for (var i = this.length; i-- && this[i] !== v;) {}
       return i;
@@ -210,6 +210,12 @@ THE SOFTWARE.
   };
   defineProperty(Object, 'create', descriptor);
 
+  descriptor.value = function () {
+    var str = toString.call(this);
+    return (str === '[object String]' && onlySymbols(this)) ? '[object Symbol]' : str;
+  };
+  defineProperty(ObjectProto, 'toString', descriptor);
+
   try { // fails in few pre ES 5.1 engines
     setDescriptor = create(
       defineProperty(
@@ -231,6 +237,16 @@ THE SOFTWARE.
     };
   }
 
+}(Object, 'getOwnPropertySymbols'));
+
+(function (O, S) {
+  var
+    dP = O.defineProperty,
+    ObjectProto = O.prototype,
+    toString = ObjectProto.toString,
+    toStringTag = 'toStringTag',
+    descriptor
+  ;
   [
     'iterator',           // A method returning the default iterator for an object. Used by for...of.
     'match',              // A method that matches against a string, also used to determine if an object may be used as a regular expression. Used by String.prototype.match().
@@ -242,20 +258,27 @@ THE SOFTWARE.
     'unscopables',        // An Array of string values that are property values. These are excluded from the with environment bindings of the associated objects.
     'species',            // A constructor function that is used to create derived objects.
     'toPrimitive',        // A method converting an object to a primitive value.
-    'toStringTag'         // A string value used for the default description of an object. Used by Object.prototype.toString().
+    toStringTag           // A string value used for the default description of an object. Used by Object.prototype.toString().
   ].forEach(function (name) {
-    defineProperty(Symbol, name, {value: Symbol(name)});
-  });
-
-  defineProperty(ObjectProto, 'toString', {
-    value: function toString() {
-      var str = asString.call(this);
-      return (str === '[object String]' && onlySymbols(this)) ? '[object Symbol]' : str;
+    if (!(name in Symbol)) {
+      dP(Symbol, name, {value: Symbol(name)});
+      switch (name) {
+        case toStringTag:
+          descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
+          descriptor.value;
+          descriptor.value = function () {
+            var
+              str = toString.call(this),
+              tst = this[Symbol.toStringTag]
+            ;
+            return typeof tst === 'undefined' ? str : ('[object ' + tst + ']');
+          };
+          dP(ObjectProto, 'toString', descriptor);
+          break;
+      }
     }
   });
-
-}(Object, 'getOwnPropertySymbols'));
-
+}(Object, Symbol));
 
 (function (Si, AP, SP) {
 

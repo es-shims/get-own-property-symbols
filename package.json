@@ -1,5 +1,5 @@
 {
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
@@ -24,6 +24,6 @@
     "test": "node test/.test.js"
   },
   "devDependencies": {
-    "wru": "~0.2.x"
+    "wru": "*"
   }
 }
