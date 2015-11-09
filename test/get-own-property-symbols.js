@@ -243,6 +243,7 @@ wru.test([
         list.push(result.value);
       }
       wru.assert('Array is iterable', list.join(',') === '1,2,3');
+      wru.assert('Array iterator is iterable too', iterator[Symbol.iterator]() === iterator);
       for (var k in []) throw new Error('there should be no iterator here');
     }
   }, {
@@ -255,6 +256,7 @@ wru.test([
         list.push(result.value);
       }
       wru.assert('String is iterable', list.join(',') === '😺,😲');
+      wru.assert('String iterator is iterable too', iterator[Symbol.iterator]() === iterator);
       for (var k in '') throw new Error(k + ' <= there should be no iterator here');
     }
   }, {

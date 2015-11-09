@@ -243,7 +243,6 @@
       switch (name) {
         case toStringTag:
           descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
-          descriptor.value;
           descriptor.value = function () {
             var
               str = toString.call(this),
@@ -260,18 +259,25 @@
 
 (function (Si, AP, SP) {
 
+  function returnThis() { return this; }
+
   // make Arrays usable as iterators
   // so that other iterables can copy same logic
   if (!AP[Si]) AP[Si] = function () {
-    var i = 0, self = this;
-    return {
-      next: function next() {
-        var done = self.length <= i;
-        return done ?
-          {done: done} :
-          {done: done, value: self[i++]};
+    var
+      i = 0,
+      self = this,
+      iterator = {
+        next: function next() {
+          var done = self.length <= i;
+          return done ?
+            {done: done} :
+            {done: done, value: self[i++]};
+        }
       }
-    };
+    ;
+    iterator[Si] = returnThis;
+    return iterator;
   };
 
   // make Strings usable as iterators
@@ -281,20 +287,22 @@
       fromCodePoint = String.fromCodePoint,
       self = this,
       i = 0,
-      length = self.length
-    ;
-    return {
-      next: function next() {
-        var
-          done = length <= i,
-          c = done ? '' : fromCodePoint(self.codePointAt(i))
-        ;
-        i += c.length;
-        return done ?
-          {done: done} :
-          {done: done, value: c};
+      length = self.length,
+      iterator = {
+        next: function next() {
+          var
+            done = length <= i,
+            c = done ? '' : fromCodePoint(self.codePointAt(i))
+          ;
+          i += c.length;
+          return done ?
+            {done: done} :
+            {done: done, value: c};
+        }
       }
-    };
+    ;
+    iterator[Si] = returnThis;
+    return iterator;
   };
 
 }(Symbol.iterator, Array.prototype, String.prototype));
