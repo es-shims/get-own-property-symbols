@@ -89,11 +89,11 @@
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return (source[uid] = defineProperty(
+      return (source[uid] = Object.freeze(defineProperty(
         Object(uid),
         'constructor',
         sourceConstructor
-      ));
+      )));
     },
     Symbol = function Symbol(description) {
       if (this && this !== G) {
@@ -281,7 +281,7 @@
   };
 
   // make Strings usable as iterators
-  // to simplify Array.from and 
+  // to simplify Array.from and
   if (!SP[Si]) SP[Si] = function () {
     var
       fromCodePoint = String.fromCodePoint,
