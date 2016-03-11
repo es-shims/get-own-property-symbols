@@ -318,5 +318,14 @@ wru.test([
       Point.prototype[Symbol.toStringTag] = 'Point';
       wru.assert(Object.prototype.toString.call(new Point) === '[object Point]');
     }
+  }, {
+  	name: 'silently fail when overwriting properties',
+    test: function () {
+      var sym = Symbol('2');
+	  sym.toString = 0;
+	  wru.assert(typeof sym.toString === 'function');
+	  sym.valueOf = 0;
+	  wru.assert(typeof sym.valueOf === 'function');
+    }
   }
 ]);
