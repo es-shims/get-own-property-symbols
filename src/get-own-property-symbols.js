@@ -165,6 +165,8 @@
 
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
+    if (onlyNonSymbols(symbol))
+      throw new TypeError(symbol + ' is not a symbol');
     return hOP.call(source, symbol) ?
       symbol.slice(prefixLength * 2, -random.length) :
       void 0
