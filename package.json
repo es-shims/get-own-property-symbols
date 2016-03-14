@@ -1,5 +1,5 @@
 {
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
@@ -21,6 +21,7 @@
   },
   "main": "./build/get-own-property-symbols.node.js",
   "scripts": {
+    "build": "make",
     "test": "node test/.test.js"
   },
   "devDependencies": {

@@ -43,6 +43,7 @@ THE SOFTWARE.
     gOPD = Object[GOPD],
     create = Object.create,
     keys = Object.keys,
+    freeze = Object.freeze || Object,
     defineProperty = Object[DP],
     defineProperties = Object[DPies],
     descriptor = gOPD(Object, GOPN),
@@ -111,7 +112,7 @@ THE SOFTWARE.
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return (source[uid] = defineProperty(
+      return freeze(source[uid] = defineProperty(
         Object(uid),
         'constructor',
         sourceConstructor
@@ -305,7 +306,7 @@ THE SOFTWARE.
   };
 
   // make Strings usable as iterators
-  // to simplify Array.from and 
+  // to simplify Array.from and for/of like loops
   if (!SP[Si]) SP[Si] = function () {
     var
       fromCodePoint = String.fromCodePoint,

@@ -329,5 +329,14 @@ wru.test([
       }
       wru.assert(didTrow, 'non symbols cannot be passed to keyFor');
     }
+  }, {
+    name: 'silently fail when overwriting properties',
+    test: function () {
+      var sym = Symbol('2');
+      sym.toString = 0;
+      wru.assert(typeof sym.toString === 'function');
+      sym.valueOf = 0;
+      wru.assert(typeof sym.valueOf === 'function');
+    }
   }
 ]);
