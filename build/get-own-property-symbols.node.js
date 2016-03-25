@@ -45,7 +45,7 @@ THE SOFTWARE.
     keys = Object.keys,
     freeze = Object.freeze || Object,
     defineProperty = Object[DP],
-    defineProperties = Object[DPies],
+    $defineProperties = Object[DPies],
     descriptor = gOPD(Object, GOPN),
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
@@ -167,7 +167,7 @@ THE SOFTWARE.
         }
       });
     } else {
-      defineProperties(o, descriptors);
+      $defineProperties(o, descriptors);
     }
     return o;
   };

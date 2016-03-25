@@ -338,5 +338,11 @@ wru.test([
       sym.valueOf = 0;
       wru.assert(typeof sym.valueOf === 'function');
     }
+  }, {
+    name: 'defineProperties is not affected',
+    test: function () {
+      Object.defineProperties({}, {});
+      wru.assert(true);
+    }
   }
 ]);
