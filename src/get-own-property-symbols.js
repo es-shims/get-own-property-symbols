@@ -198,17 +198,21 @@
   defineProperty(ObjectProto, 'toString', descriptor);
 
   try { // fails in few pre ES 5.1 engines
-    setDescriptor = create(
+    if (true === create(
       defineProperty(
         {},
         prefix,
         {
           get: function () {
-            return defineProperty(this, prefix, {value: false})[prefix];
+            return defineProperty(this, prefix, {value: true})[prefix];
           }
         }
       )
-    )[prefix] || defineProperty;
+    )[prefix]) {
+      setDescriptor = defineProperty;
+    } else {
+      throw 'IE11';
+    }
   } catch(o_O) {
     setDescriptor = function (o, key, descriptor) {
       var protoDescriptor = gOPD(ObjectProto, key);
