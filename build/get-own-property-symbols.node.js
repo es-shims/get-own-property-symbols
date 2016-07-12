@@ -43,8 +43,9 @@ THE SOFTWARE.
     gOPD = Object[GOPD],
     create = Object.create,
     keys = Object.keys,
+    freeze = Object.freeze || Object,
     defineProperty = Object[DP],
-    defineProperties = Object[DPies],
+    $defineProperties = Object[DPies],
     descriptor = gOPD(Object, GOPN),
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
@@ -111,7 +112,7 @@ THE SOFTWARE.
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return (source[uid] = defineProperty(
+      return freeze(source[uid] = defineProperty(
         Object(uid),
         'constructor',
         sourceConstructor
@@ -166,7 +167,7 @@ THE SOFTWARE.
         }
       });
     } else {
-      defineProperties(o, descriptors);
+      $defineProperties(o, descriptors);
     }
     return o;
   };
@@ -187,6 +188,8 @@ THE SOFTWARE.
 
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
+    if (onlyNonSymbols(symbol))
+      throw new TypeError(symbol + ' is not a symbol');
     return hOP.call(source, symbol) ?
       symbol.slice(prefixLength * 2, -random.length) :
       void 0
@@ -303,7 +306,7 @@ THE SOFTWARE.
   };
 
   // make Strings usable as iterators
-  // to simplify Array.from and 
+  // to simplify Array.from and for/of like loops
   if (!SP[Si]) SP[Si] = function () {
     var
       fromCodePoint = String.fromCodePoint,

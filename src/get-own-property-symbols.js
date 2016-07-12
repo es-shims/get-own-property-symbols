@@ -21,8 +21,9 @@
     gOPD = Object[GOPD],
     create = Object.create,
     keys = Object.keys,
+    freeze = Object.freeze || Object,
     defineProperty = Object[DP],
-    defineProperties = Object[DPies],
+    $defineProperties = Object[DPies],
     descriptor = gOPD(Object, GOPN),
     ObjectProto = Object.prototype,
     hOP = ObjectProto.hasOwnProperty,
@@ -89,7 +90,7 @@
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return (source[uid] = defineProperty(
+      return freeze(source[uid] = defineProperty(
         Object(uid),
         'constructor',
         sourceConstructor
@@ -144,7 +145,7 @@
         }
       });
     } else {
-      defineProperties(o, descriptors);
+      $defineProperties(o, descriptors);
     }
     return o;
   };
@@ -165,6 +166,8 @@
 
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
+    if (onlyNonSymbols(symbol))
+      throw new TypeError(symbol + ' is not a symbol');
     return hOP.call(source, symbol) ?
       symbol.slice(prefixLength * 2, -random.length) :
       void 0
@@ -205,7 +208,12 @@
           }
         }
       )
-    )[prefix] || defineProperty;
+    )[prefix] || setDescriptor = function (o, key, descriptor) {
+      var protoDescriptor = gOPD(ObjectProto, key);
+      delete ObjectProto[key];
+      defineProperty(o, key, descriptor);
+      defineProperty(ObjectProto, key, protoDescriptor);
+    };
   } catch(o_O) {
     setDescriptor = function (o, key, descriptor) {
       var protoDescriptor = gOPD(ObjectProto, key);
@@ -281,7 +289,7 @@
   };
 
   // make Strings usable as iterators
-  // to simplify Array.from and 
+  // to simplify Array.from and for/of like loops
   if (!SP[Si]) SP[Si] = function () {
     var
       fromCodePoint = String.fromCodePoint,
