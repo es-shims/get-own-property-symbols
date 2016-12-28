@@ -190,10 +190,19 @@ THE SOFTWARE.
   descriptor.value = function (symbol) {
     if (onlyNonSymbols(symbol))
       throw new TypeError(symbol + ' is not a symbol');
-    return hOP.call(source, symbol) ?
-      symbol.slice(prefixLength * 2, -random.length) :
-      void 0
-    ;
+    if (!hOP.call(source, symbol)) {
+      return void 0;
+    }
+    var label = symbol.slice(prefixLength);
+    if (label.slice(0, prefixLength) !== prefix) {
+      return void 0;
+    }
+    label = label.slice(prefixLength);
+    if (label === random) {
+      return void 0;
+    }
+    label = label.slice(0, label.length - random.length);
+    return label.length > 0 ? label : void 0;
   };
   defineProperty(Symbol, 'keyFor', descriptor);
 
