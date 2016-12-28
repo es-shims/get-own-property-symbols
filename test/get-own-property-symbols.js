@@ -171,6 +171,8 @@ wru.test([
       var s = Symbol['for'](label);
       wru.assert('labeled Symbols are the same', s === Symbol['for'](label));
       wru.assert('labels can be retrieved back', Symbol.keyFor(s) === label);
+      wru.assert('returns undefined if can not find symbol in global registry', Symbol.keyFor(Symbol('5')) === undefined);
+      wru.assert('(long label): returns undefined if can not find symbol in global registry', Symbol.keyFor(Symbol(label+label+label)) === undefined);
     }
   }, {
     name: 'propertyIsEnumerable',
