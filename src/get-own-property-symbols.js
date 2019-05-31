@@ -229,7 +229,7 @@
 
 }(Object, 'getOwnPropertySymbols'));
 
-(function (O, Symbol) {
+(function (O, Symbol) {'use strict';
   var
     dP = O.defineProperty,
     ObjectProto = O.prototype,
@@ -258,9 +258,9 @@
           descriptor.value = function () {
             var
               str = toString.call(this),
-              tst = this[Symbol.toStringTag]
+              tst = this != null ? this[Symbol.toStringTag] : this
             ;
-            return typeof tst === 'undefined' ? str : ('[object ' + tst + ']');
+            return tst == null ? str : ('[object ' + tst + ']');
           };
           dP(ObjectProto, 'toString', descriptor);
           break;

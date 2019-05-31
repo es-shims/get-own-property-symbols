@@ -314,6 +314,12 @@ wru.test([
       wru.assert(Object.prototype.toString.call(Symbol()) === '[object Symbol]');
     }
   }, {
+    name: 'Object#toString.call(undefined | null)',
+    test: function () {
+      wru.assert(Object.prototype.toString.call(undefined) === '[object Undefined]');
+      wru.assert(Object.prototype.toString.call(null) === '[object Null]');
+    }
+  }, {
     name: 'toStringTag',
     test: function () {
       function Point() {}
