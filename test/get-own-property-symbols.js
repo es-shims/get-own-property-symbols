@@ -288,6 +288,14 @@ wru.test([
       wru.assert('for real', b[s] === 'symbol');
     }
   }, {
+    name: 'Object.create(null) works',
+    test: function () {
+      var b = Object.create(null);
+      wru.assert('create works', typeof b === 'object');
+      var c = Object.create(null, undefined);
+      wru.assert('create with null,undefined works', typeof c === 'object');
+    }
+  }, {
     name: 'typeof is not string',
     test: function () {
       wru.assert(typeof Symbol('typeof') !== 'string');
