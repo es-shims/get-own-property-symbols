@@ -1,7 +1,13 @@
-src/*
-test/*
-template/*
-node_modules/*
+.DS_Store
+node_modules/
+
+# Only apps should have lockfiles
+npm-shrinkwrap.json
+package-lock.json
+yarn.lock
+
+# build output
 build/*.amd.js
-Makefile
+
 index.html
+Makefile
