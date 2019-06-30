@@ -22,7 +22,9 @@
   "main": "./build/get-own-property-symbols.node.js",
   "scripts": {
     "build": "make",
-    "test": "node test/.test.js"
+    "prepublish": "npm run build",
+    "test": "npm run tests-only",
+    "tests-only": "node test/.test.js"
   },
   "devDependencies": {
     "jshint": "^2.9.1",
