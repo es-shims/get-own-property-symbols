@@ -157,6 +157,17 @@ wru.test([
       }
     }
   }, {
+    name: 'can use Symbol via Function.prototype.bind',
+    test: function () {
+      try {
+        Symbol.bind(Array)();
+        Symbol.call(Symbol());
+        wru.assert(true);
+      } catch(e) {
+        wru.assert(false);
+      }
+    }
+  }, {
     name: 'Symbol name',
     test: function () {
       var s1 = Symbol();
