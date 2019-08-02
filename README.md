@@ -1,9 +1,9 @@
 get-own-property-symbols
 ========================
 
-[![build status](https://secure.travis-ci.org/WebReflection/get-own-property-symbols.svg)](http://travis-ci.org/WebReflection/get-own-property-symbols)
+[![build status](https://travis-ci.com/es-shims/get-own-property-symbols.svg?branch=master)](http://travis-ci.com/es-shims/get-own-property-symbols)
 
-This is a widely compatible, Mobile friendly, and zero dependencies polyfill for `Object.getOwnPropertySymbols`.
+This is a widely compatible, mobile-friendly, and zero dependencies polyfill for `Object.getOwnPropertySymbols`.
 ```js
 var getOwnPropertySymbols = require('get-own-property-symbols');
 
