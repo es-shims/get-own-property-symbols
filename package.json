@@ -26,12 +26,13 @@
     "web": "tiny-cdn run",
     "prebuild": "npm run clean && mkdirp build",
     "build": "make",
-    "postbuild": "npm test",
-    "prepublish": "safe-publish-latest && (not-in-pubish || npm run build)",
+    "prepublish": "safe-publish-latest && (not-in-publish || npm run build)",
     "test": "npm run tests-only",
+    "pretests-only": "npm run build",
     "tests-only": "node test/.test.js"
   },
   "devDependencies": {
+    "in-publish": "^2.0.0",
     "jshint": "^2.9.1",
     "markdown": "^0.5.0",
     "mkdirp": "^0.5.1",
