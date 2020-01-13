@@ -37,7 +37,7 @@
     "mkdirp": "^0.5.1",
     "rimraf": "^2.7.1",
     "safe-publish-latest": "^1.1.4",
-    "tiny-cdn": "^0.5.2",
+    "tiny-cdn": "^0.7.0",
     "uglify-js": "^2.7.3",
     "wru": "^0.2.7"
   }
