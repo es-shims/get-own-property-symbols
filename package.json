@@ -21,14 +21,22 @@
   },
   "main": "./build/get-own-property-symbols.node.js",
   "scripts": {
+    "lint": "jshint src/*.js build/*.max.js",
+    "clean": "rimraf build",
+    "web": "tiny-cdn run",
+    "prebuild": "npm run clean && mkdirp build",
     "build": "make",
-    "prepublish": "npm run build",
+    "postbuild": "npm test",
+    "prepublish": "safe-publish-latest && (not-in-pubish || npm run build)",
     "test": "npm run tests-only",
     "tests-only": "node test/.test.js"
   },
   "devDependencies": {
     "jshint": "^2.9.1",
     "markdown": "^0.5.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.7.1",
+    "safe-publish-latest": "^1.1.4",
     "tiny-cdn": "^0.5.2",
     "uglify-js": "^2.7.3",
     "wru": "^0.2.7"
