@@ -42,5 +42,12 @@
     "tiny-cdn": "^0.7.0",
     "uglify-js": "^2.7.3",
     "wru": "^0.2.7"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "mkdirp",
+      "rimraf",
+      "uglify-js"
+    ]
   }
 }
