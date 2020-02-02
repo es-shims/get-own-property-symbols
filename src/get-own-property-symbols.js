@@ -1,14 +1,15 @@
-(function (Object, GOPS) {'use strict';
+(function (Object, GOPS) {
+  'use strict';
 
   // (C) Andrea Giammarchi - Mit Style
 
-  if (GOPS in Object) return;
+  if (GOPS in Object) { return; }
 
   var
     setDescriptor,
     G = typeof global === typeof G ? window : global,
     id = 0,
-    random = '' + Math.random(),
+    random = String(Math.random()),
     prefix = '__\x01symbol:',
     prefixLength = prefix.length,
     internalSymbol = '__\x01symbol@@' + random,
@@ -38,7 +39,7 @@
           value: {}
         });
       }
-      o[internalSymbol]['@@' + uid] = enumerable;
+      o[internalSymbol]['@@' + uid] = enumerable; // eslint-disable-line no-param-reassign
     },
     createWithSymbols = function (proto, descriptors) {
       var self = create(proto);
@@ -54,21 +55,18 @@
       newDescriptor.enumerable = false;
       return newDescriptor;
     },
-    get = function get(){},
+    get = function get() {},
     onlyNonSymbols = function (name) {
-      return  name != internalSymbol &&
-              !hOP.call(source, name);
+      // eslint-disable-next-line eqeqeq
+      return name != internalSymbol && !hOP.call(source, name);
     },
     onlySymbols = function (name) {
-      return  name != internalSymbol &&
-              hOP.call(source, name);
+      // eslint-disable-next-line eqeqeq
+      return name != internalSymbol && hOP.call(source, name);
     },
     propertyIsEnumerable = function propertyIsEnumerable(key) {
-      var uid = '' + key;
-      return onlySymbols(uid) ? (
-        hOP.call(this, uid) &&
-        this[internalSymbol]['@@' + uid]
-      ) : pIE.call(this, key);
+      var uid = String(key);
+      return onlySymbols(uid) ? hOP.call(this, uid) && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
     },
     setAndGetSymbol = function (uid) {
       var descriptor = {
@@ -86,30 +84,28 @@
         }
       };
       defineProperty(ObjectProto, uid, descriptor);
-      return freeze(source[uid] = defineProperty(
+      source[uid] = defineProperty(
         Object(uid),
         'constructor',
         sourceConstructor
-      ));
+      );
+      return freeze(source[uid]);
     },
     Symbol = function Symbol(description) {
       if (this instanceof Symbol) {
         throw new TypeError('Symbol is not a constructor');
       }
-      return setAndGetSymbol(
-        prefix.concat(description || '', random, ++id)
-      );
+      return setAndGetSymbol(prefix.concat(description || '', random, ++id));
     },
     source = create(null),
-    sourceConstructor = {value: Symbol},
+    sourceConstructor = { value: Symbol },
     sourceMap = function (uid) {
       return source[uid];
     },
     $defineProperty = function defineProp(o, key, descriptor) {
-      var uid = '' + key;
+      var uid = String(key);
       if (onlySymbols(uid)) {
-        setDescriptor(o, uid, descriptor.enumerable ?
-            copyAsNonEnumerable(descriptor) : descriptor);
+        setDescriptor(o, uid, descriptor.enumerable ? copyAsNonEnumerable(descriptor) : descriptor);
         addInternalIfNeeded(o, uid, !!descriptor.enumerable);
       } else {
         defineProperty(o, key, descriptor);
@@ -118,9 +114,7 @@
     },
     $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
       return gOPN(o).filter(onlySymbols).map(sourceMap);
-    }
-  ;
-
+    };
   descriptor.value = $defineProperty;
   defineProperty(Object, DP, descriptor);
 
@@ -162,8 +156,7 @@
 
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
-    if (onlyNonSymbols(symbol))
-      throw new TypeError(symbol + ' is not a symbol');
+    if (onlyNonSymbols(symbol)) { throw new TypeError(symbol + ' is not a symbol'); }
     if (!hOP.call(source, symbol)) {
       return void 0;
     }
@@ -190,35 +183,29 @@
   defineProperty(Object, GOPD, descriptor);
 
   descriptor.value = function (proto, descriptors) {
-    return (arguments.length === 1 || typeof descriptors === "undefined") ?
-      create(proto) :
-      createWithSymbols(proto, descriptors);
+    return arguments.length === 1 || typeof descriptors === 'undefined' ? create(proto) : createWithSymbols(proto, descriptors);
   };
   defineProperty(Object, 'create', descriptor);
 
   descriptor.value = function () {
     var str = toString.call(this);
-    return (str === '[object String]' && onlySymbols(this)) ? '[object Symbol]' : str;
+    return str === '[object String]' && onlySymbols(this) ? '[object Symbol]' : str;
   };
   defineProperty(ObjectProto, 'toString', descriptor);
 
   try { // fails in few pre ES 5.1 engines
-    if (true === create(
-      defineProperty(
-        {},
-        prefix,
-        {
-          get: function () {
-            return defineProperty(this, prefix, {value: true})[prefix];
-          }
+    if (
+      create(defineProperty({}, prefix, {
+        get: function () {
+          return defineProperty(this, prefix, { value: true })[prefix];
         }
-      )
-    )[prefix]) {
+      }))[prefix] === true
+    ) {
       setDescriptor = defineProperty;
     } else {
-      throw 'IE11';
+      throw 'IE11'; // eslint-disable-line no-throw-literal
     }
-  } catch(o_O) {
+  } catch (o_O) { // eslint-disable-line camelcase
     setDescriptor = function (o, key, descriptor) {
       var protoDescriptor = gOPD(ObjectProto, key);
       delete ObjectProto[key];
@@ -229,41 +216,38 @@
 
 }(Object, 'getOwnPropertySymbols'));
 
-(function (O, Symbol) {'use strict';
+(function (O, Symbol) {
+  'use strict';
+
   var
     dP = O.defineProperty,
     ObjectProto = O.prototype,
     toString = ObjectProto.toString,
     toStringTag = 'toStringTag',
-    descriptor
-  ;
+    descriptor;
   [
-    'iterator',           // A method returning the default iterator for an object. Used by for...of.
-    'match',              // A method that matches against a string, also used to determine if an object may be used as a regular expression. Used by String.prototype.match().
-    'replace',            // A method that replaces matched substrings of a string. Used by String.prototype.replace().
-    'search',             // A method that returns the index within a string that matches the regular expression. Used by String.prototype.search().
-    'split',              // A method that splits a string at the indices that match a regular expression. Used by String.prototype.split().
-    'hasInstance',        // A method determining if a constructor object recognizes an object as its instance. Used by instanceof.
+    'iterator', // A method returning the default iterator for an object. Used by for...of.
+    'match', // A method that matches against a string, also used to determine if an object may be used as a regular expression. Used by String.prototype.match().
+    'replace', // A method that replaces matched substrings of a string. Used by String.prototype.replace().
+    'search', // A method that returns the index within a string that matches the regular expression. Used by String.prototype.search().
+    'split', // A method that splits a string at the indices that match a regular expression. Used by String.prototype.split().
+    'hasInstance', // A method determining if a constructor object recognizes an object as its instance. Used by instanceof.
     'isConcatSpreadable', // A Boolean value indicating if an object should be flattened to its array elements. Used by Array.prototype.concat().
-    'unscopables',        // An Array of string values that are property values. These are excluded from the with environment bindings of the associated objects.
-    'species',            // A constructor function that is used to create derived objects.
-    'toPrimitive',        // A method converting an object to a primitive value.
-    toStringTag           // A string value used for the default description of an object. Used by Object.prototype.toString().
+    'unscopables', // An Array of string values that are property values. These are excluded from the with environment bindings of the associated objects.
+    'species', // A constructor function that is used to create derived objects.
+    'toPrimitive', // A method converting an object to a primitive value.
+    toStringTag // A string value used for the default description of an object. Used by Object.prototype.toString().
   ].forEach(function (name) {
     if (!(name in Symbol)) {
-      dP(Symbol, name, {value: Symbol(name)});
-      switch (name) {
-        case toStringTag:
-          descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
-          descriptor.value = function () {
-            var
-              str = toString.call(this),
-              tst = this != null ? this[Symbol.toStringTag] : this
-            ;
-            return tst == null ? str : ('[object ' + tst + ']');
-          };
-          dP(ObjectProto, 'toString', descriptor);
-          break;
+      dP(Symbol, name, { value: Symbol(name) });
+      if (name === toStringTag) {
+        descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
+        descriptor.value = function () {
+          var str = toString.call(this);
+          var tst = this == null ? this : this[Symbol.toStringTag];
+          return tst == null ? str : '[object ' + tst + ']';
+        };
+        dP(ObjectProto, 'toString', descriptor);
       }
     }
   });
@@ -273,48 +257,51 @@
 
   function returnThis() { return this; }
 
-  // make Arrays usable as iterators
-  // so that other iterables can copy same logic
-  if (!AP[Si]) AP[Si] = function () {
-    var
-      i = 0,
-      self = this,
-      iterator = {
-        next: function next() {
-          var done = self.length <= i;
-          return done ?
-            {done: done} :
-            {done: done, value: self[i++]};
-        }
-      }
-    ;
-    iterator[Si] = returnThis;
-    return iterator;
-  };
+  /*
+   * make Arrays usable as iterators
+   * so that other iterables can copy same logic
+   */
+  if (!AP[Si]) {
+    // eslint-disable-next-line no-param-reassign
+    AP[Si] = function () {
+      var
+        i = 0,
+        self = this,
+        iterator = {
+          next: function next() {
+            var done = self.length <= i;
+            return done ? { done: done } : { done: done, value: self[i++] };
+          }
+        };
+      iterator[Si] = returnThis;
+      return iterator;
+    };
+  }
 
-  // make Strings usable as iterators
-  // to simplify Array.from and for/of like loops
-  if (!SP[Si]) SP[Si] = function () {
-    var
-      fromCodePoint = String.fromCodePoint,
-      self = this,
-      i = 0,
-      length = self.length,
-      iterator = {
-        next: function next() {
-          var
-            done = length <= i,
-            c = done ? '' : fromCodePoint(self.codePointAt(i))
-          ;
-          i += c.length;
-          return done ?
-            {done: done} :
-            {done: done, value: c};
-        }
-      }
-    ;
-    iterator[Si] = returnThis;
-    return iterator;
-  };
+  /*
+   * make Strings usable as iterators
+   * to simplify Array.from and for/of like loops
+   */
+  if (!SP[Si]) {
+    // eslint-disable-next-line no-param-reassign
+    SP[Si] = function () {
+      var
+        fromCodePoint = String.fromCodePoint,
+        self = this,
+        i = 0,
+        length = self.length,
+        iterator = {
+          next: function next() {
+            var
+              done = length <= i,
+              c = done ? '' : fromCodePoint(self.codePointAt(i));
+            i += c.length;
+            return done ? { done: done } : { done: done, value: c };
+          }
+        };
+      iterator[Si] = returnThis;
+      return iterator;
+    };
+  }
 
 }(Symbol.iterator, Array.prototype, String.prototype));

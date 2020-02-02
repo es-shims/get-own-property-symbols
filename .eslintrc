@@ -1,0 +1,36 @@
+{
+	"root": true,
+
+	"extends": "@ljharb",
+
+	"env": {
+		"browser": true,
+		"node": true,
+	},
+
+	"rules": {
+		"eqeqeq": [2, "allow-null"],
+		"func-name-matching": 0,
+		"func-style": 1,
+		"id-length": 0,
+		"indent": [2, 2],
+		"max-lines-per-function": 0,
+		"max-statements": 0,
+		"max-statements-per-line": [2, { "max": 2 }],
+		"no-invalid-this": 1,
+		"no-plusplus": 1,
+		"no-shadow": 1,
+		"no-use-before-define": 1,
+		"sort-keys": 0,
+		"strict": 1,
+	},
+
+	"overrides": [
+		{
+			"files": "**/*.max.js",
+			"rules": {
+				"multiline-comment-style": 0,
+			},
+		},
+	],
+}

@@ -21,7 +21,7 @@
   },
   "main": "./build/get-own-property-symbols.node.js",
   "scripts": {
-    "lint": "jshint src/*.js build/*.max.js",
+    "lint": "eslint src build/*.max.js",
     "clean": "rimraf build",
     "web": "tiny-cdn run",
     "prebuild": "npm run clean && mkdirp build",
@@ -32,8 +32,9 @@
     "tests-only": "node test/.test.js"
   },
   "devDependencies": {
+    "@ljharb/eslint-config": "^16.0.0",
+    "eslint": "^6.8.0",
     "in-publish": "^2.0.0",
-    "jshint": "^2.9.1",
     "markdown": "^0.5.0",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.7.1",
