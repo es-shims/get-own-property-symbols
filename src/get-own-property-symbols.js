@@ -122,7 +122,11 @@
   defineProperty(Object, GOPS, descriptor);
 
   descriptor.value = function getOwnPropertyNames(o) {
-    return gOPN(o).filter(onlyNonSymbols);
+    try {
+      return gOPN(o).filter(onlyNonSymbols);
+    } catch (e) {
+      return [];
+    }
   };
   defineProperty(Object, GOPN, descriptor);
 
