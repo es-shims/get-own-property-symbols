@@ -357,6 +357,17 @@ wru.test([
       wru.assert(didTrow, 'non symbols cannot be passed to keyFor');
     }
   }, {
+    name: 'should not allow implicit string coercion',
+    test: function () {
+      var didTrow = false;
+      try {
+        Symbol('10') + '';
+      } catch(yay) {
+        didTrow = true;
+      }
+      wru.assert(didTrow, 'should not allow implicit string coercion');
+    }
+  }, {
     name: 'silently fail when overwriting properties',
     test: function () {
       var sym = Symbol('2');
