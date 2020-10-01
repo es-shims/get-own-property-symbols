@@ -354,7 +354,7 @@ wru.test([
       } catch(yay) {
         didTrow = true;
       }
-      wru.assert(didTrow, 'non symbols cannot be passed to keyFor');
+      wru.assert('non symbols cannot be passed to keyFor', didTrow);
     }
   }, {
     name: 'should not allow implicit string coercion',
@@ -365,7 +365,7 @@ wru.test([
       } catch(yay) {
         didTrow = true;
       }
-      wru.assert(didTrow, 'should not allow implicit string coercion');
+      wru.assert('should not allow implicit string coercion', didTrow);
     }
   }, {
     name: 'silently fail when overwriting properties',
