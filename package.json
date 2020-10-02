@@ -31,19 +31,21 @@
     "pretest": "npm run lint",
     "test": "npm run tests-only",
     "pretests-only": "npm run build",
-    "tests-only": "node test/.test.js"
+    "tests-only": "tape 'test/**'"
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^17.2.0",
+    "es5-shim": "^4.5.14",
+    "es6-shim": "^0.35.5",
     "eslint": "^7.10.0",
     "in-publish": "^2.0.1",
     "markdown": "^0.5.0",
     "mkdirp": "^0.5.5",
     "rimraf": "^2.7.1",
     "safe-publish-latest": "^1.1.4",
+    "tape": "^5.0.1",
     "tiny-cdn": "^0.7.0",
-    "uglify-js": "^2.7.3",
-    "wru": "^0.2.7"
+    "uglify-js": "^2.7.3"
   },
   "greenkeeper": {
     "ignore": [
