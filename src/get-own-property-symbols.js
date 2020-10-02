@@ -66,7 +66,7 @@
     },
     propertyIsEnumerable = function propertyIsEnumerable(key) {
       var uid = String(key);
-      return onlySymbols(uid) ? hOP.call(this, uid) && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
+      return onlySymbols(uid) ? hOP.call(this, uid) && !!this[internalSymbol] && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
     },
     setAndGetSymbol = function (uid) {
       var descriptor = {
