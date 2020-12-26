@@ -11,3 +11,8 @@ build/*.amd.js
 
 index.html
 Makefile
+coverage/
+.nyc_output/
+
+.github/workflows
+template/
