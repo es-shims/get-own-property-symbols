@@ -4,7 +4,7 @@ var test = require('tape');
 
 require('es5-shim');
 require('es6-shim');
-require('../build/get-own-property-symbols.node.js');
+require('../src/get-own-property-symbols');
 
 test('shimmed', function (t) {
   t.equal(typeof Object.getOwnPropertySymbols, 'function');

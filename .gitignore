@@ -8,3 +8,6 @@ yarn.lock
 
 # build output
 build
+
+coverage/
+.nyc_output/
