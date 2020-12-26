@@ -30,11 +30,13 @@
     "prepublish": "safe-publish-latest && (not-in-publish || npm run build)",
     "pretest": "npm run lint",
     "test": "npm run tests-only",
+    "posttest": "aud --production",
     "pretests-only": "npm run build",
     "tests-only": "nyc tape 'test/**/*.js'"
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^17.3.0",
+    "aud": "^1.1.3",
     "es5-shim": "^4.5.14",
     "es6-shim": "^0.35.5",
     "eslint": "^7.16.0",
