@@ -1,8 +1,6 @@
 get-own-property-symbols
 ========================
 
-[![build status](https://travis-ci.com/es-shims/get-own-property-symbols.svg?branch=master)](http://travis-ci.com/es-shims/get-own-property-symbols)
-
 This is a widely compatible, mobile-friendly, and zero dependencies polyfill for `Object.getOwnPropertySymbols`.
 ```js
 var getOwnPropertySymbols = require('get-own-property-symbols');
@@ -120,9 +118,6 @@ Accordingly, if you are looking for a backward compatible, stand-alone version, 
 
 ##### Server
 
-  * node js 0.6 and higher (as tested via travis)
+  * node js 0.6 and higher
   * io.js has native support, so it works there too
   * Duktape and Nashorn should be fine too (please let me know if not)
-
-
-You can also check if your browser or device is compatible [through this page](http://webreflection.github.io/get-own-property-symbols/test/).

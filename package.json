@@ -3,7 +3,7 @@
   "license": "MIT",
   "name": "get-own-property-symbols",
   "description": "",
-  "homepage": "https://github.com/WebReflection/get-own-property-symbols",
+  "homepage": "https://github.com/es-shims/get-own-property-symbols",
   "keywords": [
     "Object",
     "getOwnPropertySymbols",
@@ -13,11 +13,11 @@
   ],
   "author": {
     "name": "Andrea Giammarchi",
-    "web": "http://webreflection.blogspot.com/"
+    "web": "https://webreflection.blogspot.com/"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/WebReflection/get-own-property-symbols.git"
+    "url": "git://github.com/es-shims/get-own-property-symbols.git"
   },
   "main": "./build/get-own-property-symbols.node.js",
   "scripts": {
