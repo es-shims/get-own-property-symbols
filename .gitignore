@@ -11,3 +11,5 @@ build
 
 coverage/
 .nyc_output/
+
+.npmignore
