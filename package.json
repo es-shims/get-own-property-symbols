@@ -37,21 +37,21 @@
     "tests-only": "nyc tape 'test/**/*.js'"
   },
   "devDependencies": {
-    "@ljharb/eslint-config": "^21.0.0",
-    "aud": "^2.0.1",
+    "@ljharb/eslint-config": "^21.1.0",
+    "aud": "^2.0.4",
     "es5-shim": "^4.6.7",
-    "es6-shim": "^0.35.6",
+    "es6-shim": "^0.35.8",
     "eslint": "=8.8.0",
     "in-publish": "^2.0.1",
     "markdown": "^0.5.0",
-    "mkdirp": "^0.5.5",
-    "npmignore": "^0.3.0",
+    "mkdirp": "^0.5.6",
+    "npmignore": "^0.3.1",
     "nyc": "^10.3.2",
     "rimraf": "^2.7.1",
     "safe-publish-latest": "^2.0.0",
-    "tape": "^5.6.1",
+    "tape": "^5.7.5",
     "tiny-cdn": "^0.7.0",
-    "uglify-js": "^2.7.3"
+    "uglify-js": "^2.8.29"
   },
   "publishConfig": {
     "ignore": [
