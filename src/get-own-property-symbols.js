@@ -5,116 +5,115 @@
 
   if (GOPS in Object) { return; }
 
-  var
-    setDescriptor,
-    G = typeof global === typeof G ? window : global,
-    id = 0,
-    random = String(Math.random()),
-    prefix = '__\x01symbol:',
-    prefixLength = prefix.length,
-    internalSymbol = '__\x01symbol@@' + random,
-    DP = 'defineProperty',
-    DPies = 'defineProperties',
-    GOPN = 'getOwnPropertyNames',
-    GOPD = 'getOwnPropertyDescriptor',
-    PIE = 'propertyIsEnumerable',
-    gOPN = Object[GOPN],
-    gOPD = Object[GOPD],
-    create = Object.create,
-    keys = Object.keys,
-    freeze = Object.freeze || Object,
-    defineProperty = Object[DP],
-    $defineProperties = Object[DPies],
-    descriptor = gOPD(Object, GOPN),
-    ObjectProto = Object.prototype,
-    hOP = ObjectProto.hasOwnProperty,
-    pIE = ObjectProto[PIE],
-    toString = ObjectProto.toString,
-    addInternalIfNeeded = function (o, uid, enumerable) {
-      if (!hOP.call(o, internalSymbol)) {
-        defineProperty(o, internalSymbol, {
-          enumerable: false,
-          configurable: false,
-          writable: false,
-          value: {}
-        });
-      }
-      o[internalSymbol]['@@' + uid] = enumerable; // eslint-disable-line no-param-reassign
-    },
-    createWithSymbols = function (proto, descriptors) {
-      var self = create(proto);
-      gOPN(descriptors).forEach(function (key) {
-        if (propertyIsEnumerable.call(descriptors, key)) {
-          $defineProperty(self, key, descriptors[key]);
-        }
-      });
-      return self;
-    },
-    copyAsNonEnumerable = function (descriptor) {
-      var newDescriptor = create(descriptor);
-      newDescriptor.enumerable = false;
-      return newDescriptor;
-    },
-    get = function get() {},
-    onlyNonSymbols = function (name) {
-      // eslint-disable-next-line eqeqeq
-      return name != internalSymbol && !hOP.call(source, name);
-    },
-    onlySymbols = function (name) {
-      // eslint-disable-next-line eqeqeq
-      return name != internalSymbol && hOP.call(source, name);
-    },
-    propertyIsEnumerable = function propertyIsEnumerable(key) {
-      var uid = String(key);
-      return onlySymbols(uid) ? hOP.call(this, uid) && !!this[internalSymbol] && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
-    },
-    setAndGetSymbol = function (uid) {
-      var descriptor = {
+  var setDescriptor;
+  var G = typeof global === typeof G ? window : global;
+  var id = 0;
+  var random = String(Math.random());
+  var prefix = '__\x01symbol:';
+  var prefixLength = prefix.length;
+  var internalSymbol = '__\x01symbol@@' + random;
+  var DP = 'defineProperty';
+  var DPies = 'defineProperties';
+  var GOPN = 'getOwnPropertyNames';
+  var GOPD = 'getOwnPropertyDescriptor';
+  var PIE = 'propertyIsEnumerable';
+  var gOPN = Object[GOPN];
+  var gOPD = Object[GOPD];
+  var create = Object.create;
+  var keys = Object.keys;
+  var freeze = Object.freeze || Object;
+  var defineProperty = Object[DP];
+  var $defineProperties = Object[DPies];
+  var descriptor = gOPD(Object, GOPN);
+  var ObjectProto = Object.prototype;
+  var hOP = ObjectProto.hasOwnProperty;
+  var pIE = ObjectProto[PIE];
+  var toString = ObjectProto.toString;
+  var addInternalIfNeeded = function (o, uid, enumerable) {
+    if (!hOP.call(o, internalSymbol)) {
+      defineProperty(o, internalSymbol, {
         enumerable: false,
-        configurable: true,
-        get: get,
-        set: function (value) {
-          setDescriptor(this, uid, {
-            enumerable: false,
-            configurable: true,
-            writable: true,
-            value: value
-          });
-          addInternalIfNeeded(this, uid, true);
-        }
-      };
-      defineProperty(ObjectProto, uid, descriptor);
-      source[uid] = defineProperty(
-        Object(uid),
-        'constructor',
-        sourceConstructor
-      );
-      return freeze(source[uid]);
-    },
-    Symbol = function Symbol(description) {
-      if (this instanceof Symbol) {
-        throw new TypeError('Symbol is not a constructor');
+        configurable: false,
+        writable: false,
+        value: {}
+      });
+    }
+    o[internalSymbol]['@@' + uid] = enumerable; // eslint-disable-line no-param-reassign
+  };
+  var createWithSymbols = function (proto, descriptors) {
+    var self = create(proto);
+    gOPN(descriptors).forEach(function (key) {
+      if (propertyIsEnumerable.call(descriptors, key)) {
+        $defineProperty(self, key, descriptors[key]);
       }
-      return setAndGetSymbol(prefix.concat(description || '', random, ++id));
-    },
-    source = create(null),
-    sourceConstructor = { value: Symbol },
-    sourceMap = function (uid) {
-      return source[uid];
-    },
-    $defineProperty = function defineProp(o, key, descriptor) {
-      var uid = String(key);
-      if (onlySymbols(uid)) {
-        setDescriptor(o, uid, descriptor.enumerable ? copyAsNonEnumerable(descriptor) : descriptor);
-        addInternalIfNeeded(o, uid, !!descriptor.enumerable);
-      } else {
-        defineProperty(o, key, descriptor);
+    });
+    return self;
+  };
+  var copyAsNonEnumerable = function (descriptor) {
+    var newDescriptor = create(descriptor);
+    newDescriptor.enumerable = false;
+    return newDescriptor;
+  };
+  var get = function get() {};
+  var onlyNonSymbols = function (name) {
+    // eslint-disable-next-line eqeqeq
+    return name != internalSymbol && !hOP.call(source, name);
+  };
+  var onlySymbols = function (name) {
+    // eslint-disable-next-line eqeqeq
+    return name != internalSymbol && hOP.call(source, name);
+  };
+  var propertyIsEnumerable = function propertyIsEnumerable(key) {
+    var uid = String(key);
+    return onlySymbols(uid) ? hOP.call(this, uid) && !!this[internalSymbol] && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
+  };
+  var setAndGetSymbol = function (uid) {
+    var descriptor = {
+      enumerable: false,
+      configurable: true,
+      get: get,
+      set: function (value) {
+        setDescriptor(this, uid, {
+          enumerable: false,
+          configurable: true,
+          writable: true,
+          value: value
+        });
+        addInternalIfNeeded(this, uid, true);
       }
-      return o;
-    },
-    $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
-      return gOPN(o).filter(onlySymbols).map(sourceMap);
     };
+    defineProperty(ObjectProto, uid, descriptor);
+    source[uid] = defineProperty(
+      Object(uid),
+      'constructor',
+      sourceConstructor
+    );
+    return freeze(source[uid]);
+  };
+  var Symbol = function Symbol(description) {
+    if (this instanceof Symbol) {
+      throw new TypeError('Symbol is not a constructor');
+    }
+    return setAndGetSymbol(prefix.concat(description || '', random, ++id));
+  };
+  var source = create(null);
+  var sourceConstructor = { value: Symbol };
+  var sourceMap = function (uid) {
+    return source[uid];
+  };
+  var $defineProperty = function defineProp(o, key, descriptor) {
+    var uid = String(key);
+    if (onlySymbols(uid)) {
+      setDescriptor(o, uid, descriptor.enumerable ? copyAsNonEnumerable(descriptor) : descriptor);
+      addInternalIfNeeded(o, uid, !!descriptor.enumerable);
+    } else {
+      defineProperty(o, key, descriptor);
+    }
+    return o;
+  };
+  var $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
+    return gOPN(o).filter(onlySymbols).map(sourceMap);
+  };
   descriptor.value = $defineProperty;
   defineProperty(Object, DP, descriptor);
 
@@ -219,12 +218,9 @@
 (function (O, Symbol) {
   'use strict';
 
-  var
-    dP = O.defineProperty,
-    ObjectProto = O.prototype,
-    toString = ObjectProto.toString,
-    toStringTag = 'toStringTag',
-    descriptor;
+  var dP = O.defineProperty;
+  var ObjectProto = O.prototype;
+  var toString = ObjectProto.toString;
   [
     'iterator', // A method returning the default iterator for an object. Used by for...of.
     'match', // A method that matches against a string, also used to determine if an object may be used as a regular expression. Used by String.prototype.match().
@@ -236,12 +232,12 @@
     'unscopables', // An Array of string values that are property values. These are excluded from the with environment bindings of the associated objects.
     'species', // A constructor function that is used to create derived objects.
     'toPrimitive', // A method converting an object to a primitive value.
-    toStringTag // A string value used for the default description of an object. Used by Object.prototype.toString().
+    'toStringTag' // A string value used for the default description of an object. Used by Object.prototype.toString().
   ].forEach(function (name) {
     if (!(name in Symbol)) {
       dP(Symbol, name, { value: Symbol(name) });
-      if (name === toStringTag) {
-        descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
+      if (name === 'toStringTag') {
+        var descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
         descriptor.value = function () {
           var str = toString.call(this);
           var tst = this == null ? this : this[Symbol.toStringTag];
@@ -264,15 +260,14 @@
   if (!AP[Si]) {
     // eslint-disable-next-line no-param-reassign
     AP[Si] = function () {
-      var
-        i = 0,
-        self = this,
-        iterator = {
-          next: function next() {
-            var done = self.length <= i;
-            return done ? { done: done } : { done: done, value: self[i++] };
-          }
-        };
+      var i = 0;
+      var self = this;
+      var iterator = {
+        next: function next() {
+          var done = self.length <= i;
+          return done ? { done: done } : { done: done, value: self[i++] };
+        }
+      };
       iterator[Si] = returnThis;
       return iterator;
     };
@@ -285,20 +280,18 @@
   if (!SP[Si]) {
     // eslint-disable-next-line no-param-reassign
     SP[Si] = function () {
-      var
-        fromCodePoint = String.fromCodePoint,
-        self = this,
-        i = 0,
-        length = self.length,
-        iterator = {
-          next: function next() {
-            var
-              done = length <= i,
-              c = done ? '' : fromCodePoint(self.codePointAt(i));
-            i += c.length;
-            return done ? { done: done } : { done: done, value: c };
-          }
-        };
+      var fromCodePoint = String.fromCodePoint;
+      var self = this;
+      var i = 0;
+      var length = self.length;
+      var iterator = {
+        next: function next() {
+          var done = length <= i;
+          var c = done ? '' : fromCodePoint(self.codePointAt(i));
+          i += c.length;
+          return done ? { done: done } : { done: done, value: c };
+        }
+      };
       iterator[Si] = returnThis;
       return iterator;
     };
