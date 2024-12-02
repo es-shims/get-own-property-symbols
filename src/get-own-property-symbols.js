@@ -140,7 +140,11 @@
 
   /** @type {typeof Object.getOwnPropertyNames} */
   descriptor.value = function getOwnPropertyNames(o) {
-    return gOPN(o).filter(onlyNonSymbols);
+    try {
+      return gOPN(o).filter(onlyNonSymbols);
+    } catch (e) {
+      return [];
+    }
   };
   defineProperty(Object, 'getOwnPropertyDescriptor', descriptor);
 
