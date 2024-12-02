@@ -1,9 +1,11 @@
 /* eslint-disable no-restricted-syntax, strict */
 
 var test = require('tape');
-
+// @ts-ignore
 require('es5-shim');
+// @ts-ignore
 require('es6-shim');
+// @ts-ignore
 require('../src/get-own-property-symbols');
 
 test('shimmed', function (t) {
@@ -11,13 +13,14 @@ test('shimmed', function (t) {
   t.equal(typeof Symbol, 'function');
 
   t.test('basics work', function (st) {
+    /** @type {{ [k: symbol]: number }} */
     var o = {};
     var s = Symbol();
     o[s] = 123;
     st.equal(Object.keys(o).join(''), '', 'no visible keys');
     st.equal(o[s], 123, 'still reachable value');
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var key in o) {
+    for (var _ in o) {
       throw new Error('this should not happen');
     }
     st.equal(Object.getOwnPropertySymbols(o)[0], s, 'can be retrieved');
@@ -30,6 +33,7 @@ test('shimmed', function (t) {
 
   t.test('cannot use Symbol as constructor', function (st) {
     st['throws'](function () {
+      // @ts-expect-error
       // eslint-disable-next-line no-new, no-new-symbol
       new Symbol();
     });
@@ -63,12 +67,14 @@ test('shimmed', function (t) {
   });
 
   t.test('propertyIsEnumerable', function (st) {
+    /** @type {{ [k: symbol]: number }} */
     var o = {};
     var s = Symbol();
     o[s] = 123;
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var k in o) { throw new Error('should not show up in a for/in'); }
+    for (var _ in o) { throw new Error('should not show up in a for/in'); }
     st.equal(Object.keys(o).length, 0, 'should not show up in Object.keys');
+    // eslint-disable-next-line no-useless-call
     st.equal(Object.prototype.propertyIsEnumerable.call(Object.prototype, s), false, 'property is enumerable');
     st.end();
   });
@@ -78,7 +84,7 @@ test('shimmed', function (t) {
     var s = Symbol();
     Object.defineProperty(o, s, { enumerable: true, value: 456 });
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var k in o) { throw new Error('should not show up in a for/in'); }
+    for (var _ in o) { throw new Error('should not show up in a for/in'); }
     st.equal(Object.keys(o).length, 0, 'should not show up in Object.keys');
     st.equal(Object.prototype.propertyIsEnumerable.call(o, s), true, 'property is not enumerable');
     st.end();
@@ -89,14 +95,16 @@ test('shimmed', function (t) {
     var s = Symbol();
     Object.defineProperty(o, s, { enumerable: false, value: 456 });
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var k in o) { throw new Error('should not show up in a for/in'); }
+    for (var _ in o) { throw new Error('should not show up in a for/in'); }
     st.equal(Object.keys(o).length, 0, 'should not show up in Object.keys');
     st.equal(Object.prototype.propertyIsEnumerable.call(o, s), false, 'property is enumerable');
     st.end();
   });
 
   t.test('defineProperties', function (st) {
+    /** @type {{ [k: symbol]: string}} */
     var o = {};
+    /** @type {{ [k: symbol]: PropertyDescriptor}} */
     var descriptors = {};
     var sEnumerable = Symbol();
     var sNotEnumerable = Symbol();
@@ -109,7 +117,7 @@ test('shimmed', function (t) {
     };
     Object.defineProperties(o, descriptors);
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var k in o) { throw new Error('should not show up in a for/in'); }
+    for (var _ in o) { throw new Error('should not show up in a for/in'); }
     st.equal(Object.keys(o).length, 0, 'should not show up in Object.keys');
     st.equal(Object.prototype.propertyIsEnumerable.call(o, sEnumerable), true, 'property is enumerable');
     st.equal(Object.prototype.propertyIsEnumerable.call(o, sNotEnumerable), false, 'property is not enumerable');
@@ -119,6 +127,7 @@ test('shimmed', function (t) {
   });
 
   t.test('defineProperties with non enumerable properties', function (st) {
+    /** @type {{ [k: symbol]: string}} */
     var o = {};
     var s = Symbol();
     var descriptors = Object.defineProperty({}, s, { enumerable: false, value: 'would throw' });
@@ -137,7 +146,7 @@ test('shimmed', function (t) {
     st.equal(list.join(','), '1,2,3', 'Array is iterable');
     st.equal(iterator[Symbol.iterator](), iterator, 'Array iterator is iterable too');
     // eslint-disable-next-line no-unreachable-loop, no-unused-vars
-    for (var k in []) { throw new Error('there should be no iterator here'); }
+    for (var _ in []) { throw new Error('there should be no iterator here'); }
     st.end();
   });
 
@@ -150,6 +159,7 @@ test('shimmed', function (t) {
     }
     st.equal(list.join(','), '😺,😲', 'String is iterable');
     st.equal(iterator[Symbol.iterator](), iterator, 'String iterator is iterable too');
+    // @ts-expect-error
     // eslint-disable-next-line no-unreachable-loop
     for (var k in '') { throw new Error(k + ' <= there should be no iterator here'); }
     st.end();
@@ -157,33 +167,39 @@ test('shimmed', function (t) {
 
   t.test('getOwnPropertyDescriptor', function (st) {
     var s = Symbol('gOPD');
+    /** @type {{ [k: PropertyKey]: unknown}} */
     var a = {};
     var b = {};
     a[s] = true;
     Object.defineProperty(b, s, { value: false });
     st.equal(Object.prototype.propertyIsEnumerable.call(a, s), true, 'a has it enumerable');
     st.equal(Object.prototype.propertyIsEnumerable.call(b, s), false, 'b has it not enumerable');
-    st.equal(Object.getOwnPropertyDescriptor(a, s).enumerable, true, 'a has descriptor enumerable');
-    st.equal(Object.getOwnPropertyDescriptor(b, s).enumerable, false, 'b has NOT descriptor enumerable');
+    // eslint-disable-next-line no-extra-parens
+    st.equal(/** @type {PropertyDescriptor} */ (Object.getOwnPropertyDescriptor(a, s)).enumerable, true, 'a has descriptor enumerable');
+    // eslint-disable-next-line no-extra-parens
+    st.equal(/** @type {PropertyDescriptor} */ (Object.getOwnPropertyDescriptor(b, s)).enumerable, false, 'b has NOT descriptor enumerable');
     st.end();
   });
 
   t.test('Object.create(proto, symbols)', function (st) {
     var s = Symbol('Object.create');
     var a = {};
+    /** @type {{ [k: PropertyKey]: PropertyDescriptor}} */
     var descriptors = { test: { value: 'value' } };
     descriptors[s] = { value: 'symbol' };
     var b = Object.create(a, descriptors);
-    st.equal(a.isPrototypeOf(b), true, 'create works');
-    st.equal(b.hasOwnProperty('test'), true, 'descriptors work');
-    st.equal(b.hasOwnProperty(s), true, 'descriptors symbols work');
+    st.equal(Object.prototype.isPrototypeOf.call(a, b), true, 'create works');
+    st.equal(Object.prototype.hasOwnProperty.call(b, 'test'), true, 'descriptors work');
+    st.equal(Object.prototype.hasOwnProperty.call(b, s), true, 'descriptors symbols work');
     st.equal(b[s], 'symbol', 'for real');
+
     st.end();
   });
 
   t.test('Object.create(null) works', function (st) {
     var b = Object.create(null);
     st.equal(typeof b, 'object', 'create works');
+    // @ts-expect-error
     var c = Object.create(null, undefined);
     st.equal(typeof c, 'object', 'create with null,undefined works');
     st.end();
@@ -195,6 +211,7 @@ test('shimmed', function (t) {
   });
 
   t.test('instanceof is not Symbol', function (st) {
+    // @ts-expect-error
     st.equal(Symbol('instanceof') instanceof Symbol, false);
     st.end();
   });
@@ -206,7 +223,7 @@ test('shimmed', function (t) {
 
   t.test('Object.create is not compromised', function (st) {
     var o = {};
-    st.equal(o.isPrototypeOf(Object.create(o)), true);
+    st.equal(Object.prototype.isPrototypeOf.call(o, Object.create(o)), true);
     st.end();
   });
 
@@ -230,6 +247,7 @@ test('shimmed', function (t) {
 
   t.test('keyFor throws on non symbol', function (st) {
     st['throws'](function () {
+      // @ts-expect-error
       Symbol.keyFor('not a Symbol');
     }, 'non symbols cannot be passed to keyFor');
     st.end();
@@ -244,8 +262,10 @@ test('shimmed', function (t) {
 
   t.test('silently fail when overwriting properties', function (st) {
     var sym = Symbol('2');
+    // @ts-expect-error
     sym.toString = 0;
     st.equal(typeof sym.toString, 'function');
+    // @ts-expect-error
     sym.valueOf = 0;
     st.equal(typeof sym.valueOf, 'function');
     st.end();

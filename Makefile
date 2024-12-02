@@ -26,3 +26,4 @@ var:
 # build node.js version
 node:
 	cat template/license.before LICENSE.txt template/license.after template/node.before $(NODE) template/node.after >build/$(REPO).node.js
+	cp src/*.d.ts build/
