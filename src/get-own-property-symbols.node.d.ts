@@ -1,0 +1,1 @@
+export type symbolish = symbol & { slice: typeof String.prototype.slice };

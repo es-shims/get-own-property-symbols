@@ -1,0 +1,12 @@
+{
+	"extends": "@ljharb/tsconfig",
+	"compilerOptions": {
+		"target": "ES2022",
+		"maxNodeModuleJsDepth": 0,
+	},
+	"noEmit": false,
+	"exclude": [
+		"build",
+		"coverage",
+	],
+}

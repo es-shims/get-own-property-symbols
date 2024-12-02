@@ -5,30 +5,29 @@
 
   if (GOPS in Object) { return; }
 
+  /** @type {(this: ThisParameterType<typeof Object.defineProperty>, ...args: Parameters<typeof Object.defineProperty>) => void} */
   var setDescriptor;
+  /** @type {global | window} */
   var G = typeof global === 'undefined' ? window : global;
   var id = 0;
   var random = String(Math.random());
   var prefix = '__\x01symbol:';
   var prefixLength = prefix.length;
   var internalSymbol = '__\x01symbol@@' + random;
-  var DP = 'defineProperty';
-  var DPies = 'defineProperties';
-  var GOPN = 'getOwnPropertyNames';
-  var GOPD = 'getOwnPropertyDescriptor';
-  var PIE = 'propertyIsEnumerable';
-  var gOPN = Object[GOPN];
-  var gOPD = Object[GOPD];
+  var gOPN = Object.getOwnPropertyNames;
+  var gOPD = Object.getOwnPropertyDescriptor;
   var create = Object.create;
   var keys = Object.keys;
   var freeze = Object.freeze || Object;
-  var defineProperty = Object[DP];
-  var $defineProperties = Object[DPies];
-  var descriptor = gOPD(Object, GOPN);
+  var defineProperty = Object.defineProperty;
+  var $defineProperties = Object.defineProperties;
+  // eslint-disable-next-line no-extra-parens
+  var descriptor = /** @type {PropertyDescriptor} */ (gOPD(Object, 'getOwnPropertyDescriptor'));
   var ObjectProto = Object.prototype;
   var hOP = ObjectProto.hasOwnProperty;
-  var pIE = ObjectProto[PIE];
+  var pIE = ObjectProto.propertyIsEnumerable;
   var toString = ObjectProto.toString;
+  /** @type {(o: { [k: string]: Record<`@@${string}`, boolean> }, uid: `@@${string}`, enumerable: boolean) => void} */
   var addInternalIfNeeded = function (o, uid, enumerable) {
     if (!hOP.call(o, internalSymbol)) {
       defineProperty(o, internalSymbol, {
@@ -38,8 +37,9 @@
         value: {}
       });
     }
-    o[internalSymbol]['@@' + uid] = enumerable; // eslint-disable-line no-param-reassign
+    o[internalSymbol][/** @type {`@@${string}`} */ ('@@' + uid)] = enumerable; // eslint-disable-line no-param-reassign, no-extra-parens
   };
+  /** @type {(proto: null | object, descriptors: { [k: string]: Record<`@@${string}`, boolean> }) => object} */
   var createWithSymbols = function (proto, descriptors) {
     var self = create(proto);
     gOPN(descriptors).forEach(function (key) {
@@ -49,30 +49,35 @@
     });
     return self;
   };
+  /** @type {(descriptor: PropertyDescriptor) => PropertyDescriptor} */
   var copyAsNonEnumerable = function (descriptor) {
     var newDescriptor = create(descriptor);
     newDescriptor.enumerable = false;
     return newDescriptor;
   };
   var get = function get() {};
-  var onlyNonSymbols = function (name) {
+  var onlyNonSymbols = /** @type {(name: string | symbolish) => name is string} */ function (name) {
     // eslint-disable-next-line eqeqeq
     return name != internalSymbol && !hOP.call(source, name);
   };
-  var onlySymbols = function (name) {
+  var onlySymbols = /** @type {(name: string | symbolish) => name is symbolish} */ function (name) {
     // eslint-disable-next-line eqeqeq
     return name != internalSymbol && hOP.call(source, name);
   };
+  /** @type {(this: { [k: string | symbolish]: Record<`@@${string}`, boolean> }, key: string | symbolish) => boolean} */
   var propertyIsEnumerable = function propertyIsEnumerable(key) {
     var uid = String(key);
-    return onlySymbols(uid) ? hOP.call(this, uid) && !!this[internalSymbol] && this[internalSymbol]['@@' + uid] : pIE.call(this, key);
+    // eslint-disable-next-line no-extra-parens
+    return onlySymbols(uid) ? hOP.call(this, uid) && !!this[internalSymbol] && this[internalSymbol][/** @type {`@@${string}`} */ ('@@' + uid)] : pIE.call(this, key);
   };
+  /** @type {(uid: `@@${string}`) => Readonly<symbolish>} */
   var setAndGetSymbol = function (uid) {
+    /** @type {PropertyDescriptor} */
     var descriptor = {
       enumerable: false,
       configurable: true,
       get: get,
-      set: function (value) {
+      set: /** @type {(this: { [k: string]: Record<`@@${string}`, boolean> }, value: unknown) => void} */ function (value) {
         setDescriptor(this, uid, {
           enumerable: false,
           configurable: true,
@@ -90,46 +95,72 @@
     );
     return freeze(source[uid]);
   };
+    /**
+     * @this {Symbol}
+     * @param {string} description
+     * @returns {Readonly<symbolish>}
+     */
   var Symbol = function Symbol(description) {
     if (this instanceof Symbol) {
       throw new TypeError('Symbol is not a constructor');
     }
-    return setAndGetSymbol(prefix.concat(description || '', random, ++id));
+    // eslint-disable-next-line no-extra-parens
+    return setAndGetSymbol(/** @type {Parameters<typeof setAndGetSymbol>[0]} */ (prefix + (description || '') + random + ++id));
   };
+  /** @type {Record<`@@${string}`, symbolish>} */
   var source = create(null);
   var sourceConstructor = { value: Symbol };
+  /** @type {(uid: `@@${string}`) => symbolish} */
   var sourceMap = function (uid) {
     return source[uid];
   };
+    /** @type {typeof Object.defineProperty} */
   var $defineProperty = function defineProp(o, key, descriptor) {
     var uid = String(key);
     if (onlySymbols(uid)) {
       setDescriptor(o, uid, descriptor.enumerable ? copyAsNonEnumerable(descriptor) : descriptor);
-      addInternalIfNeeded(o, uid, !!descriptor.enumerable);
+      // eslint-disable-next-line no-extra-parens
+      addInternalIfNeeded(/** @type {Parameters<addInternalIfNeeded>[0]} */ (o), uid, !!descriptor.enumerable);
     } else {
       defineProperty(o, key, descriptor);
     }
     return o;
   };
+
+  /** @type {typeof Object.getOwnPropertySymbols} */
   var $getOwnPropertySymbols = function getOwnPropertySymbols(o) {
-    return gOPN(o).filter(onlySymbols).map(sourceMap);
+    // eslint-disable-next-line no-extra-parens
+    return gOPN(o).filter(onlySymbols).map(/** @type {(uid: string) => symbolish} */ (sourceMap));
   };
   descriptor.value = $defineProperty;
-  defineProperty(Object, DP, descriptor);
+  defineProperty(Object, 'defineProperty', descriptor);
 
   descriptor.value = $getOwnPropertySymbols;
   defineProperty(Object, GOPS, descriptor);
 
+  /** @type {typeof Object.getOwnPropertyNames} */
   descriptor.value = function getOwnPropertyNames(o) {
     return gOPN(o).filter(onlyNonSymbols);
   };
-  defineProperty(Object, GOPN, descriptor);
+  defineProperty(Object, 'getOwnPropertyDescriptor', descriptor);
 
+  /** @type {typeof Object.defineProperties} */
   descriptor.value = function defineProperties(o, descriptors) {
-    var symbols = $getOwnPropertySymbols(descriptors);
+    // eslint-disable-next-line no-extra-parens
+    var symbols = /** @type {symbolish[]} */ ($getOwnPropertySymbols(descriptors));
     if (symbols.length) {
-      keys(descriptors).concat(symbols).forEach(function (uid) {
-        if (propertyIsEnumerable.call(descriptors, uid)) {
+      /** @type {(string | symbolish)[]} */
+      var items = [].concat(
+        // @ts-expect-error TS sucks with concat
+        keys(descriptors),
+        symbols
+      );
+      items.forEach(function (uid) {
+        if (propertyIsEnumerable.call(
+          // eslint-disable-next-line no-extra-parens
+          /** @type {ThisParameterType<typeof propertyIsEnumerable>} */ (descriptors),
+          uid
+        )) {
           $defineProperty(o, uid, descriptors[uid]);
         }
       });
@@ -138,21 +169,24 @@
     }
     return o;
   };
-  defineProperty(Object, DPies, descriptor);
+  defineProperty(Object, 'defineProperties', descriptor);
 
   descriptor.value = propertyIsEnumerable;
-  defineProperty(ObjectProto, PIE, descriptor);
+  defineProperty(ObjectProto, 'propertyIsEnumerable', descriptor);
 
   descriptor.value = Symbol;
   defineProperty(G, 'Symbol', descriptor);
 
+  /** @type {(key: string) => Readonly<symbolish>} */
   // defining `Symbol.for(key)`
   descriptor.value = function (key) {
-    var uid = prefix.concat(prefix, key, random);
+    // eslint-disable-next-line no-extra-parens
+    var uid = /** @type {Parameters<typeof setAndGetSymbol>[0]} */ (prefix + prefix + key + random);
     return uid in ObjectProto ? source[uid] : setAndGetSymbol(uid);
   };
   defineProperty(Symbol, 'for', descriptor);
 
+  /** @type {(symbol: symbolish) => string | undefined} */
   // defining `Symbol.keyFor(symbol)`
   descriptor.value = function (symbol) {
     if (onlyNonSymbols(symbol)) { throw new TypeError(symbol + ' is not a symbol'); }
@@ -172,6 +206,7 @@
   };
   defineProperty(Symbol, 'keyFor', descriptor);
 
+  /** @type {(o: { [k: string | symbolish]: Record<`@@${string}`, boolean> }, key: string | symbolish) => PropertyDescriptor | undefined} */
   descriptor.value = function getOwnPropertyDescriptor(o, key) {
     var descriptor = gOPD(o, key);
     if (descriptor && onlySymbols(key)) {
@@ -179,13 +214,18 @@
     }
     return descriptor;
   };
-  defineProperty(Object, GOPD, descriptor);
+  defineProperty(Object, 'getOwnPropertyDescriptor', descriptor);
 
-  descriptor.value = function (proto, descriptors) {
-    return arguments.length === 1 || typeof descriptors === 'undefined' ? create(proto) : createWithSymbols(proto, descriptors);
-  };
+  // eslint-disable-next-line no-extra-parens
+  descriptor.value = /** @type {typeof Object.create} */ (function (proto, descriptors) {
+    return arguments.length === 1 || typeof descriptors === 'undefined'
+      ? create(proto)
+      // eslint-disable-next-line no-extra-parens
+      : createWithSymbols(proto, /** @type {Parameters<typeof createWithSymbols>[1]} */ (descriptors));
+  });
   defineProperty(Object, 'create', descriptor);
 
+  /** @type {(this: string | symbolish) => string} */
   descriptor.value = function () {
     var str = toString.call(this);
     return str === '[object String]' && onlySymbols(this) ? '[object Symbol]' : str;
@@ -207,9 +247,11 @@
   } catch (o_O) { // eslint-disable-line camelcase
     setDescriptor = function (o, key, descriptor) {
       var protoDescriptor = gOPD(ObjectProto, key);
-      delete ObjectProto[key];
+      // eslint-disable-next-line no-extra-parens
+      delete ObjectProto[/** @type {keyof typeof Object.prototype} */ (key)];
       defineProperty(o, key, descriptor);
-      defineProperty(ObjectProto, key, protoDescriptor);
+      // eslint-disable-next-line no-extra-parens
+      defineProperty(ObjectProto, key, /** @type {NonNullable<typeof protoDescriptor>} */ (protoDescriptor));
     };
   }
 
@@ -237,8 +279,9 @@
     if (!(name in Symbol)) {
       dP(Symbol, name, { value: Symbol(name) });
       if (name === 'toStringTag') {
-        var descriptor = O.getOwnPropertyDescriptor(ObjectProto, 'toString');
-        descriptor.value = function () {
+        // eslint-disable-next-line no-extra-parens
+        var descriptor = /** @type {PropertyDescriptor} */ (O.getOwnPropertyDescriptor(ObjectProto, 'toString'));
+        descriptor.value = /** @type {(this: null | { [Symbol.toStringTag]?: unknown }) => string} */ function () {
           var str = toString.call(this);
           var tst = this == null ? this : this[Symbol.toStringTag];
           return tst == null ? str : '[object ' + tst + ']';
@@ -249,8 +292,9 @@
   });
 }(Object, Symbol));
 
-(function (Si, AP, SP) {
+(/** @type {(Si: symbolish, AP: unknown[] & Record<symbolish, unknown>, SP: String & Record<symbolish, unknown>) => void} */ function (Si, AP, SP) {
 
+  /** @type {<T>(this: T) => T} */
   function returnThis() { return this; }
 
   /*
@@ -261,7 +305,9 @@
     // eslint-disable-next-line no-param-reassign
     AP[Si] = function () {
       var i = 0;
+
       var self = this;
+      /** @type {{ next(): { done: boolean, value?: unknown } } & { [k in symbol]?: unknown }} */
       var iterator = {
         next: function next() {
           var done = self.length <= i;
@@ -284,10 +330,12 @@
       var self = this;
       var i = 0;
       var length = self.length;
+      /** @type {{ next(): { done: boolean, value?: string } } & { [k in symbol]?: unknown }} */
       var iterator = {
         next: function next() {
           var done = length <= i;
-          var c = done ? '' : fromCodePoint(self.codePointAt(i));
+          // eslint-disable-next-line no-extra-parens
+          var c = done ? '' : fromCodePoint(/** @type {number} */ (self.codePointAt(i)));
           i += c.length;
           return done ? { done: done } : { done: done, value: c };
         }
@@ -297,4 +345,13 @@
     };
   }
 
-}(Symbol.iterator, Array.prototype, String.prototype));
+}(
+  // eslint-disable-next-line no-extra-parens
+  /** @type {symbolish} */ (Symbol.iterator),
+  // eslint-disable-next-line no-extra-parens
+  /** @type {unknown[] & Record<symbolish, unknown>} */ (Array.prototype),
+  // eslint-disable-next-line no-extra-parens
+  /** @type {String & Record<symbolish, unknown>} */ (String.prototype)
+));
+
+/** @typedef {import('../').symbolish} symbolish */
