@@ -6,7 +6,7 @@
   if (GOPS in Object) { return; }
 
   var setDescriptor;
-  var G = typeof global === typeof G ? window : global;
+  var G = typeof global === 'undefined' ? window : global;
   var id = 0;
   var random = String(Math.random());
   var prefix = '__\x01symbol:';
