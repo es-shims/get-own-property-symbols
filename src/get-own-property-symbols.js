@@ -22,7 +22,7 @@
   var defineProperty = Object.defineProperty;
   var $defineProperties = Object.defineProperties;
   // eslint-disable-next-line no-extra-parens
-  var descriptor = /** @type {PropertyDescriptor} */ (gOPD(Object, 'getOwnPropertyDescriptor'));
+  var descriptor = /** @type {PropertyDescriptor} */ (gOPD(Object, 'getOwnPropertyNames'));
   var ObjectProto = Object.prototype;
   var hOP = ObjectProto.hasOwnProperty;
   var pIE = ObjectProto.propertyIsEnumerable;
@@ -142,7 +142,7 @@
   descriptor.value = function getOwnPropertyNames(o) {
     return gOPN(o).filter(onlyNonSymbols);
   };
-  defineProperty(Object, 'getOwnPropertyDescriptor', descriptor);
+  defineProperty(Object, 'getOwnPropertyNames', descriptor);
 
   /** @type {typeof Object.defineProperties} */
   descriptor.value = function defineProperties(o, descriptors) {
